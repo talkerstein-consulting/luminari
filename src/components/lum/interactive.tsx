@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react";
-import { Check } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import { Tumble } from "./cta";
 
 /* ---------- Reveal: rises into place once, the first time it enters view ---------- */
@@ -108,13 +108,11 @@ export function WalkthroughForm() {
         <span>Company <em>(optional)</em></span>
         <input autoComplete="organization" value={f.company} onChange={set("company")} />
       </label>
-      <label className={`field ${err("service") ? "err" : ""}`}>
-        <span>Service</span>
-        <select value={f.service} onChange={set("service")} onBlur={blur("service")} aria-invalid={err("service") || undefined} required>
-          <option value="">Select a service</option>
-          {services.map((s) => <option key={s}>{s}</option>)}
-        </select>
-      </label>
+      <div className={`field ${err("service") ? "err" : ""}`}>
+        <span id="w-svc-label">Service</span>
+        <Dropdown labelId="w-svc-label" placeholder="Select a service" options={services} value={f.service}
+          onChange={(v) => setF({ ...f, service: v })} onClose={blur("service")} />
+      </div>
       <div className="form-foot">
         <button type="submit" className={`cta cta-main ${sending ? "is-busy" : ""}`} aria-label="Request a walkthrough" aria-busy={sending || undefined} disabled={sending}><Tumble>Request a walkthrough</Tumble></button>
         <p className="form-msg" role="alert">{tried && !valid ? "Add your name, a complete work email and a service to continue." : ""}</p>
@@ -201,4 +199,72 @@ export function PinProgress({ className = "", children }: { className?: string; 
     return () => { cancelAnimationFrame(raf); window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); };
   }, []);
   return <div ref={ref} className={className}>{children}</div>;
+}
+
+/* ---------- Dropdown: the branded replacement for <select> ----------
+   A button that opens a listbox panel. Keyboard: Enter/Space/↓ opens, ↑↓ move,
+   Home/End jump, a letter jumps to the next option starting with it, Enter picks,
+   Escape or Tab closes. Clicking outside closes. */
+function Dropdown({ labelId, placeholder, options, value, onChange, onClose }: {
+  labelId: string; placeholder: string; options: string[]; value: string;
+  onChange: (v: string) => void; onClose?: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [hi, setHi] = useState(0);
+  const root = useRef<HTMLDivElement>(null);
+  const btn = useRef<HTMLButtonElement>(null);
+  const list = useRef<HTMLUListElement>(null);
+
+  const show = (at = Math.max(0, options.indexOf(value))) => { setHi(at); setOpen(true); };
+  const hide = (refocus = true) => { setOpen(false); onClose?.(); if (refocus) btn.current?.focus(); };
+  const pick = (i: number) => { onChange(options[i]); hide(); };
+
+  useEffect(() => {
+    if (!open) return;
+    list.current?.focus();
+    const out = (e: PointerEvent) => { if (!root.current?.contains(e.target as Node)) hide(false); };
+    document.addEventListener("pointerdown", out);
+    return () => document.removeEventListener("pointerdown", out);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  // keep the highlighted option in view
+  useEffect(() => { if (open) list.current?.children[hi]?.scrollIntoView({ block: "nearest" }); }, [hi, open]);
+
+  const onListKey = (e: React.KeyboardEvent) => {
+    const last = options.length - 1;
+    const moves: Record<string, number> = { ArrowDown: Math.min(last, hi + 1), ArrowUp: Math.max(0, hi - 1), Home: 0, End: last };
+    if (e.key in moves) { e.preventDefault(); setHi(moves[e.key]); return; }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(hi); return; }
+    if (e.key === "Escape") { e.preventDefault(); hide(); return; }
+    if (e.key === "Tab") { hide(false); return; }
+    if (e.key.length === 1) {
+      const k = e.key.toLowerCase();
+      const next = options.findIndex((o, i) => i > hi && o.toLowerCase().startsWith(k));
+      const wrap = options.findIndex((o) => o.toLowerCase().startsWith(k));
+      if (next >= 0 || wrap >= 0) setHi(next >= 0 ? next : wrap);
+    }
+  };
+
+  return (
+    <div ref={root} className={`dd ${open ? "open" : ""}`}>
+      <button ref={btn} type="button" className={`dd-btn ${value ? "" : "empty"}`} aria-haspopup="listbox" aria-expanded={open}
+        aria-labelledby={`${labelId} w-svc-value`}
+        onClick={() => (open ? hide() : show())}
+        onKeyDown={(e) => { if (["ArrowDown", "ArrowUp"].includes(e.key)) { e.preventDefault(); show(); } }}>
+        <span id="w-svc-value">{value || placeholder}</span>
+        <ChevronDown strokeWidth={1.5} aria-hidden="true" />
+      </button>
+      <ul ref={list} className="dd-list" role="listbox" aria-labelledby={labelId} tabIndex={-1} hidden={!open}
+        aria-activedescendant={open ? `dd-opt-${hi}` : undefined} onKeyDown={onListKey}>
+        {options.map((o, i) => (
+          <li key={o} id={`dd-opt-${i}`} role="option" aria-selected={o === value}
+            className={`${i === hi ? "hi" : ""} ${o === value ? "sel" : ""}`}
+            onPointerEnter={() => setHi(i)} onClick={() => pick(i)}>
+            <span>{o}</span>{o === value && <Check strokeWidth={1.5} aria-hidden="true" />}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
