@@ -99,7 +99,7 @@ export default function Home() {
         {/* HERO */}
         <section id="top" className="hero" aria-labelledby="hero-h">
           <div className="wrap hero-copy">
-            <span className="eyebrow hero-in" style={{ ["--d" as string]: "0ms" }}>Commercial janitorial · Toronto &amp; Vaughan</span>
+            <span className="eyebrow hero-in" style={{ ["--d" as string]: "0ms" }}>Commercial janitorial&nbsp;· Toronto &amp;&nbsp;Vaughan</span>
             <h1 id="hero-h" className="h1">
               <span className="ln"><span className="hero-in" style={{ ["--d" as string]: "80ms" }}>Tomorrow’s first impression.</span></span>
               <span className="ln"><span className="hero-in" style={{ ["--d" as string]: "180ms" }}>Handled tonight.</span></span>
@@ -237,7 +237,7 @@ export default function Home() {
         {/* PROCESS */}
         <section className="section" aria-labelledby="proc-h">
           <div className="wrap">
-            <Head id="proc-h" title="A clear start. A better routine." />
+            <Head id="proc-h" title="A clear start. A better routine." />
             <ol className="steps">
               {steps.map(([title, body], i) => (
                 <Reveal as="li" key={title} delay={i * 90}>

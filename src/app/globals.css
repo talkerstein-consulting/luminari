@@ -516,3 +516,16 @@ ul, ol { list-style: none; padding: 0; }
 .insp-spot.done { animation: spot-out .7s var(--ease) 1.1s forwards; }
 @keyframes spot-out { to { opacity: 0; transform: scale(.85); visibility: hidden; pointer-events: none; } }
 @media (prefers-reduced-motion: reduce) { .insp-spot.done { animation: none; opacity: 0; visibility: hidden; } }
+
+/* ---------- phone fixes ---------- */
+@media (max-width: 640px) {
+  /* the room bleeds edge to edge so the hotspots have space; the caption would sit on them */
+  .insp-wide { padding-inline: 0; overflow-x: clip; } /* edge hotspot rings must not widen the page */
+  .insp-panel { padding-inline: var(--gutter); }
+  .insp-action { left: var(--gutter); right: var(--gutter); }
+  .insp-caption { display: none; }
+  /* the owner stage: shorter run, so there is no long empty stretch of blur */
+  .stage { height: 210vh; }
+  .stage-title { --in: clamp(0, var(--p) / .16, 1); --out: clamp(0, (var(--p) - .26) / .16, 1); }
+  .stage-card { --c: clamp(0, (var(--p) - .3) / .26, 1); }
+}
