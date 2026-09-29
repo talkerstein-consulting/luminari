@@ -1,5 +1,5 @@
 import { BadgeCheck, CalendarCheck, Mail, Phone, ShieldCheck, UserCheck } from "lucide-react";
-import ComparisonSlider from "@/components/comparison-slider";
+import { Inspection } from "@/components/lum/inspection";
 import { Logo } from "@/components/lum/logo";
 import { Cta } from "@/components/lum/cta";
 import { TcgBadge } from "@/components/lum/tcg-badge";
@@ -214,27 +214,9 @@ export default function Home() {
         {/* FINAL INSPECTION */}
         <section className="section dark" aria-labelledby="insp-h">
           <div className="wrap">
-            <Head id="insp-h" title="The last look makes the difference." lede="Six details. One room. Drag across to see what a final inspection catches before the handover." />
-            <Reveal className="compare">
-              <ComparisonSlider
-                beforeImage="/images/challenge-room.jpg"
-                afterImage="/images/challenge-clean.jpg"
-                beforeAlt="Illustrative meeting room before the final inspection"
-                afterAlt="The same meeting room after the final inspection"
-                initialPosition={50}
-                dividerWidth={1}
-                dividerColor="rgba(255,255,255,.9)"
-                handleColor="#ffffff"
-                handleSize={52}
-                showLabels
-                labelText={{ before: "Before", after: "After" }}
-                afterLabelClassName="after"
-                ariaLabel="Before and after comparison of the meeting room"
-                className="absolute inset-0"
-              />
-            </Reveal>
-            <p className="fine">An illustrative look at why the small things matter.</p>
+            <Head id="insp-h" title="The last look makes the difference." lede="Six details. One room. Put your eye for detail to the test, clean what you find, and complete the handover. An illustrative look at why the small things matter." />
           </div>
+          <Reveal className="insp-wide"><Inspection /></Reveal>
         </section>
 
         {/* OWNER */}

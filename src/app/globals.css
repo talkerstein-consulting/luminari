@@ -250,6 +250,83 @@ ul, ol { list-style: none; padding: 0; }
 .compare .chip.after { left: auto !important; right: 20px !important; }
 @media (max-width: 640px) { .compare { aspect-ratio: 4 / 3; } }
 
+/* ---------- final inspection (hotspot cleaning activity) ----------
+   Scene left, panel right; the panel is the only place text changes, so the room never
+   jumps. Hotspots are hairline rings that fill taupe when cleaned, and ring taupe if missed. */
+/* full viewport width, page gutters as margins */
+.insp-wide { padding-inline: var(--gutter); }
+.insp { display: grid; gap: clamp(28px, 3vw, 44px); }
+.insp-scene { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--ink); touch-action: manipulation; }
+.insp-scene > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.insp-patch { animation: patch .9s var(--ease) both; }
+@keyframes patch { from { opacity: 0; filter: brightness(1.25); } }
+.insp-spot { position: absolute; z-index: 2; width: 52px; height: 52px; margin: -26px 0 0 -26px; display: grid; place-items: center; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .9); background: rgba(42, 45, 49, .38); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  font: 400 18px/1 var(--sans); color: var(--white); transition: background-color .3s ease, border-color .3s ease, transform .3s var(--ease); }
+.insp-spot::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .5); animation: ring 2.4s var(--ease) infinite; }
+@keyframes ring { 0% { transform: scale(.8); opacity: 1; } 100% { transform: scale(1.35); opacity: 0; } }
+.insp-spot:hover, .insp-spot.active { transform: scale(1.08); background: rgba(62, 81, 102, .75); }
+.insp-spot svg { width: 20px; height: 20px; }
+.insp-spot.done { background: var(--taupe); border-color: var(--taupe); color: var(--ink); }
+.insp-spot.done::after { display: none; }
+.insp-spot.missed { border-color: var(--taupe); color: var(--taupe); font: 600 13px/1 var(--sans); }
+.insp-spot.missed::after { border-color: var(--taupe); }
+.insp-action { position: absolute; z-index: 3; left: 16px; right: 16px; bottom: 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.insp-pad { position: relative; min-height: 48px; display: grid; place-items: center; overflow: hidden; cursor: grab; touch-action: none; user-select: none;
+  border: 1px solid rgba(255, 255, 255, .5); background: rgba(42, 45, 49, .6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.insp-pad:active { cursor: grabbing; }
+.insp-pad i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, rgba(214, 201, 179, .25), rgba(214, 201, 179, .55)); transition: width .15s linear; }
+.insp-pad span { position: relative; display: inline-flex; align-items: center; gap: 8px; font: 600 11px/1.3 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--white); padding: 0 12px; text-align: center; }
+.insp-pad svg, .insp-do svg { width: 16px; height: 16px; }
+.insp-do { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 18px; background: var(--white); color: var(--ink); font: 600 13px/1 var(--sans); letter-spacing: .04em; white-space: nowrap; transition: background-color .3s ease; }
+.insp-do:hover { background: var(--taupe); }
+.insp-do:disabled { background: var(--taupe); cursor: default; }
+.insp-caption { position: absolute; z-index: 1; top: 14px; left: 16px; font: 600 10px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: rgba(255, 255, 255, .8); }
+/* the panel runs under the room as one row: status · copy · actions */
+.insp-panel { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr) auto; gap: clamp(24px, 4vw, 64px); align-items: start; padding-top: 28px; border-top: 1px solid var(--line-dark); }
+.insp-status { display: grid; gap: 14px; }
+.insp-copy { display: grid; justify-items: start; gap: 14px; max-width: 62ch; }
+.insp-actions { display: grid; justify-items: end; gap: 8px; }
+.cta-icon svg { width: 16px; height: 16px; margin-left: 10px; flex: none; }
+.insp-meter { width: 100%; height: 1px; background: var(--line-dark); }
+.insp-meter i { display: block; height: 100%; background: var(--taupe); transition: width .6s var(--ease); }
+.insp-panel h3 { font: 400 clamp(28px, 2.6vw, 38px)/1.1 var(--display); }
+.insp-tasks { width: 100%; border-top: 1px solid var(--line-dark); }
+.insp-tasks button { width: 100%; min-height: 44px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--line-dark); font: 500 14px/1.3 var(--sans); color: rgba(255, 255, 255, .85); text-align: left; }
+.insp-tasks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
+.insp-tasks button span { display: inline-grid; place-items: center; width: 22px; font: 400 16px/1 var(--display); color: var(--taupe); }
+.insp-tasks button span svg { width: 16px; height: 16px; }
+.insp-tasks button.done { color: var(--taupe); }
+.insp-tasks button:hover { color: var(--white); }
+.insp-check { display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: 15px; color: rgba(255, 255, 255, .85); cursor: pointer; }
+.insp-check input { position: absolute; opacity: 0; pointer-events: none; }
+.insp-check span { width: 20px; height: 20px; border: 1px solid rgba(255, 255, 255, .6); display: grid; place-items: center; color: var(--ink); transition: background-color .3s ease, border-color .3s ease; }
+.insp-check span svg { width: 14px; height: 14px; opacity: 0; transition: opacity .2s ease; }
+.insp-check input:checked + span svg { opacity: 1; }
+.insp-check input:checked + span { background: var(--taupe); border-color: var(--taupe); }
+.insp-check input:focus-visible + span { outline: 1px solid var(--white); outline-offset: 3px; }
+.insp-missed { display: grid; gap: 10px; width: 100%; padding: 16px 0; border-block: 1px solid var(--line-dark); font-size: 14px; line-height: 1.6; color: rgba(255, 255, 255, .72); }
+.insp-missed:empty { display: none; }
+.insp-missed strong { color: var(--taupe); font-weight: 600; }
+@media (max-width: 960px) {
+  .insp-panel { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .insp-actions { justify-items: start; }
+  .insp-tasks { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  /* the scene stays 16:9 so hotspots and clean patches line up with the photo */
+  .insp-spot { width: 34px; height: 34px; margin: -17px 0 0 -17px; font-size: 15px; }
+  .insp-spot svg { width: 16px; height: 16px; }
+  .insp-spot::before { content: ""; position: absolute; inset: -6px; } /* 46px touch target */
+  /* on phones the scene is too short to host the wipe bar, so it hangs just below the room
+     instead of covering the lower hotspots */
+  .insp-scene { overflow: visible; }
+  .insp-scene.has-action { margin-bottom: 116px; }
+  .insp-action { left: 0; right: 0; top: calc(100% + 10px); bottom: auto; grid-template-columns: minmax(0, 1fr); }
+  .insp-caption { top: 10px; left: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .insp-spot::after { animation: none; } }
+
 /* ---------- owner ---------- */
 .owner { display: grid; justify-items: center; gap: 16px; max-width: 760px; margin: 0 auto; padding: clamp(40px, 6vw, 72px) clamp(24px, 6vw, 72px); background: var(--paper); border: 1px solid var(--line); text-align: center; }
 .owner-name { font: 400 30px/1.2 var(--display); }
@@ -433,3 +510,9 @@ ul, ol { list-style: none; padding: 0; }
 .nav.is-open { position: fixed; top: 0; left: 0; right: 0; }
 .nav.is-open + main { margin-top: 85px; } /* bar + 1px border */
 @media (max-width: 1100px) { .nav.is-open + main { margin-top: 73px; } }
+
+/* a cleaned hotspot shows its check for a beat, then fades away so the clean room reads
+   uninterrupted (it returns on "Try again", since the class comes off) */
+.insp-spot.done { animation: spot-out .7s var(--ease) 1.1s forwards; }
+@keyframes spot-out { to { opacity: 0; transform: scale(.85); visibility: hidden; pointer-events: none; } }
+@media (prefers-reduced-motion: reduce) { .insp-spot.done { animation: none; opacity: 0; visibility: hidden; } }
