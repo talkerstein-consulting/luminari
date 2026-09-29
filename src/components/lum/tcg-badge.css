@@ -1,0 +1,116 @@
+.tcg-footer {
+  display: block;
+  /* The plaque's width is a percentage of the lockup's column, so this
+     wrapper has to BE that column rather than shrink to the plaque. */
+  width: 100%;
+  color: var(--fg-primary);          /* the ground's ink: black on paper, paper on ink */
+}
+
+.tcg-plaque {
+  /* NOIR's own width, so the three lines of the lockup share one
+     measure: 40.04% of the column, which is the figure footer-mark cuts
+     the word to. Capped, because past about 520px the credit is bigger
+     than the thing it credits. */
+  --w: min(40.04%, 520px);
+  /* NOIR is not centred in the column — it starts 30.47% in. The credit
+     takes the same start, so the two words sit on one left edge. */
+  margin-inline-start: 30.47%;
+  --pad-x: 8px;
+  /* The hit area, over and under the lettering. The strip itself is under
+     20px tall; this makes the thing a thumb can land on 44px and more,
+     without moving the lettering, which stays centred in the box. */
+  --pad-y: 14px;
+  position: relative;
+  display: block;
+  width: var(--w);
+  aspect-ratio: 16 / 1;              /* the plaque's box */
+  box-sizing: content-box;
+  padding-block: var(--pad-y);
+  margin-block: calc(-1 * var(--pad-y)); /* the padding is hit area, not layout */
+  color: inherit;
+  text-decoration: none;
+  background: none;
+}
+
+/* text: glyph SVG as mask, painted with currentColor → centred by construction */
+.tcg-text {
+  position: absolute;
+  left: var(--pad-x); right: var(--pad-x);
+  top: 50%; transform: translateY(-50%);
+  display: block;
+  aspect-ratio: 1101.46 / 34.94;     /* viewBox of tcg-outline.svg */
+  -webkit-mask: url("/tcg-outline.svg") center / contain no-repeat;
+          mask: url("/tcg-outline.svg") center / contain no-repeat;
+  background: currentColor;
+  transition: background-color var(--dur-fast, .18s) var(--ease-out, ease);
+}
+
+/* hover -------------------------------------------------------------------
+   It used to flip the lettering to the GROUND colour — readable only
+   because a block of particles had gathered behind it. With the block
+   gone that rule paints ink on ink and the credit disappears under the
+   pointer. Gold instead — the house's one accent, and the same thing the
+   trail's current crumb and a focused control already do. */
+.tcg-plaque:hover .tcg-text,
+.tcg-plaque:focus-visible .tcg-text,
+.tcg-plaque.is-hot .tcg-text {
+  background: var(--fg-accent);
+}
+
+/* The coin: fixed to the middle of the SCREEN, big, over everything.
+   The plaque is the last line of the page and a coin its own height
+   would be a trinket; this one arrives the size of the mark above it.
+   Hidden until the plaque is hot, then fades in; the canvas inside is
+   mounted on the first hover (see tcg-badge.tsx) and this is what fades
+   it. Pointer events off, so the coin appearing under the pointer can
+   never end the hover that summoned it. */
+.tcg-coin {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: min(34vmin, 330px);
+  height: min(34vmin, 330px);
+  transform: translate(-50%, -50%) scale(0.92);
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity var(--dur-base, .4s) var(--ease-out, ease),
+    transform var(--dur-base, .4s) var(--ease-out, ease);
+}
+/* The 3D canvas writes `pointer-events: auto` inline on its wrapper and
+   canvas, which beat the `none` above: once mounted, the invisible coin
+   in the middle of the screen still counted as part of the link, so
+   passing over that spot re-summoned it (and a click opened the site).
+   Forced off for everything inside. */
+.tcg-coin,
+.tcg-coin * {
+  pointer-events: none !important;
+}
+.tcg-coin > div,
+.tcg-coin canvas {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+.tcg-plaque:hover .tcg-coin,
+.tcg-plaque:focus-visible .tcg-coin,
+.tcg-plaque.is-hot .tcg-coin {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+
+@media (max-width: 640px) {
+  /* The last line of the page, under the ARIA mark, as wide as the
+     screen allows: let out past the gutters so the lettering is the
+     width of the mark above it rather than a stamp in a corner. */
+  .tcg-footer { width: calc(100% + 2rem); margin-inline: -1rem; }
+  .tcg-plaque { --w: 100%; --pad-x: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tcg-text, .tcg-coin { transition: none !important; }
+  /* A spinning coin is motion the reader asked not to have. */
+  .tcg-coin { display: none; }
+}

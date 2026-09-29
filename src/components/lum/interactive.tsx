@@ -1,0 +1,204 @@
+"use client";
+
+import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react";
+import { Check } from "lucide-react";
+import { Tumble } from "./cta";
+
+/* ---------- Reveal: rises into place once, the first time it enters view ---------- */
+export function Reveal({ as: Tag = "div", className = "", delay = 0, children, ...rest }: {
+  as?: ElementType; className?: string; delay?: number; children: ReactNode; [k: string]: unknown;
+}) {
+  const ref = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setInView(true); io.disconnect(); }
+    }, { rootMargin: "0px 0px -8% 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const Comp = Tag as "div"; // any tag; typed as div so ref/props check
+  return (
+    <Comp ref={ref as React.RefObject<HTMLDivElement>} className={`rv ${inView ? "in" : ""} ${className}`} style={{ ["--d" as string]: `${delay}ms` }} {...rest}>
+      {children}
+    </Comp>
+  );
+}
+
+/* ---------- FAQ accordion ---------- */
+export function Faq({ items }: { items: { q: string; a: string }[] }) {
+  const [open, setOpen] = useState(0);
+  return (
+    <div className="faq">
+      {items.map((it, i) => {
+        const on = open === i;
+        return (
+          <div key={it.q} className={`faq-item ${on ? "open" : ""}`}>
+            <h3>
+              <button type="button" id={`faq-b${i}`} aria-expanded={on} aria-controls={`faq-p${i}`} onClick={() => setOpen(on ? -1 : i)}>
+                <span>{it.q}</span><i aria-hidden="true" />
+              </button>
+            </h3>
+            <div id={`faq-p${i}`} role="region" aria-labelledby={`faq-b${i}`} className="faq-panel">
+              <div><p>{it.a}</p></div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ---------- Walkthrough form: opens a ready-to-send email ---------- */
+const services = [
+  "Recurring janitorial", "Office cleaning", "Restaurant cleaning", "Residential contracts",
+  "Deep cleaning", "Post-construction cleaning", "Move-in & move-out cleaning", "School cleaning",
+];
+const emailOk = (v: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
+
+export function WalkthroughForm() {
+  const [f, setF] = useState({ name: "", email: "", company: "", service: "" });
+  const [tried, setTried] = useState(false);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [sending, setSending] = useState(false);
+  const [done, setDone] = useState(false);
+  const blur = (k: string) => () => setTouched((t) => ({ ...t, [k]: true }));
+  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setF({ ...f, [k]: e.target.value });
+  const bad = { name: !f.name.trim(), email: !emailOk(f.email), service: !f.service };
+  const valid = !bad.name && !bad.email && !bad.service;
+
+  // Send through the site first; if that isn't configured or fails, open a ready-made email.
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setTried(true);
+    if (!valid || sending) return;
+    setSending(true);
+    const r = await fetch("/api/walkthrough", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(f) }).catch(() => null);
+    setSending(false);
+    if (r?.ok) { setDone(true); return; }
+    const body = encodeURIComponent(`Name: ${f.name}\nCompany: ${f.company || "-"}\nService: ${f.service}\nEmail: ${f.email}`);
+    window.location.href = `mailto:Admin@luminaricleaning.com?subject=${encodeURIComponent("Walkthrough request")}&body=${body}`;
+    setDone(true);
+  };
+
+  if (done) {
+    return (
+      <p className="form-done" role="status">
+        <Check strokeWidth={1.5} aria-hidden="true" />
+        Your email app should open with the request ready. Nothing is sent until you press send.
+      </p>
+    );
+  }
+
+  const err = (k: keyof typeof bad) => (tried || touched[k]) && bad[k];
+  return (
+    <form id="walkthrough" className="form" onSubmit={submit} noValidate>
+      <label className={`field ${err("name") ? "err" : ""}`}>
+        <span>Your name</span>
+        <input autoComplete="name" value={f.name} onChange={set("name")} onBlur={blur("name")} aria-invalid={err("name") || undefined} required />
+      </label>
+      <label className={`field ${err("email") ? "err" : ""}`}>
+        <span>Work email</span>
+        <input type="email" autoComplete="email" value={f.email} onChange={set("email")} onBlur={blur("email")} aria-invalid={err("email") || undefined} aria-describedby="w-email-hint" required />
+        <em id="w-email-hint" className="hint" hidden={!((tried || touched.email) && f.email !== "" && bad.email)}>Enter a complete email address.</em>
+      </label>
+      <label className="field">
+        <span>Company <em>(optional)</em></span>
+        <input autoComplete="organization" value={f.company} onChange={set("company")} />
+      </label>
+      <label className={`field ${err("service") ? "err" : ""}`}>
+        <span>Service</span>
+        <select value={f.service} onChange={set("service")} onBlur={blur("service")} aria-invalid={err("service") || undefined} required>
+          <option value="">Select a service</option>
+          {services.map((s) => <option key={s}>{s}</option>)}
+        </select>
+      </label>
+      <div className="form-foot">
+        <button type="submit" className={`cta cta-main ${sending ? "is-busy" : ""}`} aria-label="Request a walkthrough" aria-busy={sending || undefined} disabled={sending}><Tumble>Request a walkthrough</Tumble></button>
+        <p className="form-msg" role="alert">{tried && !valid ? "Add your name, a complete work email and a service to continue." : ""}</p>
+      </div>
+    </form>
+  );
+}
+
+/* ---------- Footer link groups as tabs ---------- */
+export function FooterTabs({ cols }: { cols: { title: string; links: string[][] }[] }) {
+  const [active, setActive] = useState(0);
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const pick = (i: number) => { const n = (i + cols.length) % cols.length; setActive(n); tabs.current[n]?.focus(); };
+  return (
+    <div className="ftabs">
+      <div role="tablist" aria-label="Footer" className="ftabs-list">
+        {cols.map((c, i) => (
+          <button key={c.title} ref={(el) => { tabs.current[i] = el; }} role="tab" type="button" id={`ft-${i}`}
+            aria-selected={active === i} aria-controls="ft-panel" tabIndex={active === i ? 0 : -1}
+            onClick={() => setActive(i)}
+            onKeyDown={(e) => { if (e.key === "ArrowRight") pick(active + 1); if (e.key === "ArrowLeft") pick(active - 1); }}>
+            {c.title}
+          </button>
+        ))}
+      </div>
+      <ul id="ft-panel" role="tabpanel" aria-labelledby={`ft-${active}`} key={active} className="ftabs-panel">
+        {cols[active].links.map(([label, href]) => <li key={label}><a className="u" href={href}>{label}</a></li>)}
+      </ul>
+    </div>
+  );
+}
+
+/* ---------- Sticky stage: heading rises to centre, lifts out, the card rises in ----------
+   The section is tall; its inner stage sticks for the length of the scroll, and --p (0→1)
+   is how far through the section the reader is. CSS maps --p to each beat. */
+export function StickyStage({ id, title, children }: { id: string; title: string; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const r = el.getBoundingClientRect();
+      const travel = r.height - window.innerHeight;
+      const p = travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 1;
+      el.style.setProperty("--p", p.toFixed(4));
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); };
+  }, []);
+  return (
+    <div ref={ref} className="stage">
+      <div className="stage-pin">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="stage-bg" src="/images/spaces/collaborative-office.jpg" alt="" aria-hidden="true" loading="lazy" />
+        <h2 id={id} className="h2 stage-title">{title}</h2>
+        <div className="stage-card">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- PinProgress: sets --p (0→1) as the reader scrolls through this element ---------- */
+export function PinProgress({ className = "", children }: { className?: string; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const r = el.getBoundingClientRect();
+      const travel = r.height - window.innerHeight;
+      el.style.setProperty("--p", (travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 1).toFixed(4));
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); };
+  }, []);
+  return <div ref={ref} className={className}>{children}</div>;
+}
