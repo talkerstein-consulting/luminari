@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { Libre_Caslon_Display, Manrope } from "next/font/google";
+import { Jost, Libre_Caslon_Display, Manrope } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { SmoothScroll } from "@/components/lum/smooth-scroll";
 
 const caslon = Libre_Caslon_Display({ variable: "--font-caslon", weight: "400", subsets: ["latin"] });
+// Jost is for the wordmark only — the brand lockup is geometric sans
+const jost = Jost({ variable: "--font-jost", weight: ["400", "500"], subsets: ["latin"] });
 const manrope = Manrope({ variable: "--font-manrope", weight: ["400", "500", "600", "700"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,7 +19,7 @@ const introScript = `try{var s=sessionStorage;if(s.getItem('lum-intro')||matchMe
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${caslon.variable} ${manrope.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${caslon.variable} ${manrope.variable} ${jost.variable}`} suppressHydrationWarning>
       <body>
         <SmoothScroll />
         {children}

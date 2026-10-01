@@ -114,7 +114,7 @@ export function WalkthroughForm() {
           onChange={(v) => setF({ ...f, service: v })} onClose={blur("service")} />
       </div>
       <div className="form-foot">
-        <button type="submit" className={`cta cta-main ${sending ? "is-busy" : ""}`} aria-label="Request a walkthrough" aria-busy={sending || undefined} disabled={sending}><Tumble>Request a walkthrough</Tumble></button>
+        <button type="submit" className={`cta cta-main ${sending ? "is-busy" : ""}`} aria-label="Request an assessment" aria-busy={sending || undefined} disabled={sending}><Tumble>Request an assessment</Tumble></button>
         <p className="form-msg" role="alert">{tried && !valid ? "Add your name, a complete work email and a service to continue." : ""}</p>
       </div>
     </form>

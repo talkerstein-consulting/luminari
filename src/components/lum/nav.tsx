@@ -10,7 +10,8 @@ import { Cta, Tumble } from "./cta";
 const NUMERALS = ["I", "II", "III", "IV", "V", "VI"];
 const STEP_MS = 22;
 
-export function Nav() {
+/* `base` prefixes the in-page links so the nav works from other routes too ("/" on /report). */
+export function Nav({ base = "" }: { base?: string }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const bar = useRef<HTMLDivElement>(null);
@@ -81,14 +82,14 @@ export function Nav() {
             <span aria-hidden="true" /><span aria-hidden="true" /><span aria-hidden="true" />
           </button>
           <ul className="nav-links">
-            {links.map((l) => <li key={l.href}><a className="u" href={l.href}>{l.label}</a></li>)}
+            {links.map((l) => <li key={l.href}><a className="u" href={base + l.href}>{l.label}</a></li>)}
           </ul>
         </div>
 
-        <a className="nav-logo" href="#top" aria-label="Luminari Cleaning, home" onClick={close}><Logo /></a>
+        <a className="nav-logo" href={base || "#"} aria-label="Luminari Cleaning, home" onClick={close}><Logo /></a>
 
         <div className="nav-side end">
-          <Cta href="#walkthrough" className="nav-cta">Let’s talk</Cta>
+          <Cta href={base + "#walkthrough"} className="nav-cta">Get started</Cta>
           <a className="nav-call" href="tel:+18482857711" aria-label="Call Luminari, (848) 285-7711"><Phone strokeWidth={1.5} /></a>
         </div>
       </div>
@@ -105,7 +106,7 @@ export function Nav() {
               {links.map((l, i) => (
                 <li key={l.href} style={rise(i)}>
                   <span className="sheet-num" aria-hidden="true">{NUMERALS[i]}</span>
-                  <a className="menu-link" href={l.href} onClick={close} aria-label={l.label}><Tumble>{l.label}</Tumble></a>
+                  <a className="menu-link" href={base + l.href} onClick={close} aria-label={l.label}><Tumble>{l.label}</Tumble></a>
                 </li>
               ))}
             </ul>
@@ -113,7 +114,7 @@ export function Nav() {
           <div className="sheet-foot" style={rise(links.length)}>
             <span className="eyebrow">Get in touch</span>
             <a className="u" href="mailto:Admin@luminaricleaning.com">Admin@luminaricleaning.com</a>
-            <Cta href="#walkthrough" onClick={close}>Let’s talk</Cta>
+            <Cta href={base + "#walkthrough"} onClick={close}>Get started</Cta>
           </div>
         </div>
       </div>

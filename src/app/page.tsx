@@ -1,10 +1,11 @@
 import { BadgeCheck, CalendarCheck, Mail, Phone, ShieldCheck, UserCheck } from "lucide-react";
 import { Inspection } from "@/components/lum/inspection";
-import { Logo } from "@/components/lum/logo";
+import { Hero, LogoMarquee, Opening } from "@/components/lum/reveal";
+import { Assessment } from "@/components/lum/assessment";
+import { SiteFooter } from "@/components/lum/footer";
 import { Cta } from "@/components/lum/cta";
-import { TcgBadge } from "@/components/lum/tcg-badge";
 import { Nav } from "@/components/lum/nav";
-import { Faq, FooterTabs, PinProgress, Reveal, StickyStage, WalkthroughForm } from "@/components/lum/interactive";
+import { Faq, PinProgress, Reveal, StickyStage, WalkthroughForm } from "@/components/lum/interactive";
 
 const clients = [
   { src: "unger-law", alt: "Unger Law" },
@@ -62,15 +63,6 @@ const faqs = [
   { q: "Can you manage washroom supplies?", a: "We can coordinate ordering and replenishment. Consumables are billed separately from the cleaning service." },
 ];
 
-const footerCols = [
-  { title: "Services", links: [
-    ["Janitorial services", "#services"], ["Office cleaning", "#services"], ["School cleaning", "#services"],
-    ["Restaurant cleaning", "#services"], ["Residential contracts", "#services"], ["Deep cleaning", "#services"],
-  ] },
-  { title: "Company", links: [["Areas of specialty", "#spaces"], ["Our standards", "#standards"], ["Service areas", "#contact"], ["FAQs", "#faq-h"]] },
-  { title: "Start", links: [["Request a walkthrough", "#walkthrough"]] },
-];
-
 const pad = (n: number) => String(n).padStart(2, "0");
 const ic = { strokeWidth: 1.25, "aria-hidden": true } as const;
 
@@ -89,47 +81,20 @@ export default function Home() {
     <>
       <a className="skip" href="#main">Skip to content</a>
 
-      <div className="intro" aria-hidden="true">
-        <span className="intro-logo">LUMINARI<span className="fill">LUMINARI</span></span>
-      </div>
+      {/* the original site's scroll opening sits above the header */}
+      <Opening />
 
       <Nav />
 
       <main id="main">
         {/* HERO */}
-        <section id="top" className="hero" aria-labelledby="hero-h">
-          <div className="wrap hero-copy">
-            <span className="eyebrow hero-in" style={{ ["--d" as string]: "0ms" }}>Commercial janitorial&nbsp;· Toronto &amp;&nbsp;Vaughan</span>
-            <h1 id="hero-h" className="h1">
-              <span className="ln"><span className="hero-in" style={{ ["--d" as string]: "80ms" }}>Tomorrow’s first impression.</span></span>
-              <span className="ln"><span className="hero-in" style={{ ["--d" as string]: "180ms" }}>Handled tonight.</span></span>
-            </h1>
-            <p className="lede hero-in" style={{ ["--d" as string]: "320ms" }}>Commercial and residential cleaning that takes the details off your list. Familiar people. A clear scope. A workplace ready for the day ahead.</p>
-            <div className="actions hero-in" style={{ ["--d" as string]: "420ms" }}>
-              <Cta href="#walkthrough">Request a walkthrough</Cta>
-              <Cta href="#services" kind="secondary">See our services</Cta>
-            </div>
-          </div>
-          <div className="wrap">
-            <div className="hero-img">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/workplace.jpg" alt="Sunlit contemporary workplace with meeting tables and greenery" fetchPriority="high" />
-            </div>
-          </div>
-        </section>
+        <Hero />
 
         {/* TRUSTED BY */}
         <section className="clients" aria-labelledby="clients-h">
           <div className="wrap">
             <Reveal as="h2" id="clients-h" className="eyebrow">Trusted by.</Reveal>
-            <Reveal as="ul" className="logos" delay={100}>
-              {clients.map((c) => (
-                <li key={c.src}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`/images/clients-mono/${c.src}.png`} alt={c.alt} loading="lazy" />
-                </li>
-              ))}
-            </Reveal>
+            <Reveal delay={100}><LogoMarquee logos={clients} /></Reveal>
           </div>
         </section>
 
@@ -214,16 +179,25 @@ export default function Home() {
         {/* FINAL INSPECTION */}
         <section className="section dark" aria-labelledby="insp-h">
           <div className="wrap">
-            <Head id="insp-h" title="The last look makes the difference." lede="Six details. One room. Put your eye for detail to the test, clean what you find, and complete the handover. An illustrative look at why the small things matter." />
+            <Head id="insp-h" title="The last look makes the difference." lede="Six details. One room. See what you notice." />
+            <Reveal><Inspection /></Reveal>
           </div>
-          <Reveal className="insp-wide"><Inspection /></Reveal>
+        </section>
+
+        {/* SELF-ASSESSMENT (lead capture) */}
+        <section id="assessment" className="section tint" aria-labelledby="asmt-h">
+          <div className="wrap">
+            <Head id="asmt-h" title="Is your current cleaning company actually doing a good job?" lede="Eight honest questions about the service you have today. Your score, and where it falls short." />
+            <Reveal className="asmt-wrap" delay={100}><Assessment /></Reveal>
+          </div>
         </section>
 
         {/* OWNER */}
         <section id="people" className="tint-bg" aria-labelledby="people-h">
           <StickyStage id="people-h" title="A name you know. Someone you can reach.">
             <article className="owner" aria-label="Betzalel Zrihen, Owner">
-              <span className="avatar" aria-hidden="true">BZ</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="avatar" src="/images/owner.jpg" alt="Betzalel Zrihen, owner of Luminari Cleaning" width={480} height={480} loading="lazy" />
               <h3 className="owner-name">Betzalel Zrihen</h3>
               <span className="eyebrow">Owner, Luminari Cleaning</span>
               <p className="quote">Good service starts with taking responsibility.</p>
@@ -282,26 +256,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="footer">
-        <div className="wrap">
-          <address className="footer-contact">
-            <span>4100 Chesswood Drive, Unit 200</span>
-            <a className="u" href="tel:+18482857711">+1 (848) 285-7711</a>
-            <a className="u" href="mailto:Admin@luminaricleaning.com">Admin@luminaricleaning.com</a>
-          </address>
-          <FooterTabs cols={footerCols} />
-          <div className="footer-legal">
-            <p>Luminari Cleaning © 2026 · Toronto · Vaughan · Greater Toronto Area</p>
-            <ul>
-              <li><a className="u" href="/privacy">Privacy</a></li>
-              <li><a className="u" href="/terms">Terms</a></li>
-              <li><a className="u" href="/accessibility">Accessibility</a></li>
-            </ul>
-          </div>
-        </div>
-        <a className="footer-logo" href="#top" aria-label="Luminari Cleaning, home"><Logo /></a>
-        <div className="credit"><TcgBadge tone="ink" /></div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }
