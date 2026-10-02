@@ -37,6 +37,7 @@ export function Inspection() {
   const scene = useRef<HTMLDivElement>(null);
   const cvs = useRef<HTMLCanvasElement>(null);
   const sparks = useRef<HTMLDivElement>(null);
+  const cur = useRef<HTMLSpanElement>(null);
   const seen = useRef(new Set<number>());
   const lastSpark = useRef(0);
   const start = useRef<number | null>(null);
@@ -94,7 +95,18 @@ export function Inspection() {
     if (start.current) setTime(performance.now() - start.current);
   };
 
+  // the cloth: a large ring that follows the pointer over the dirty room
+  const moveCloth = (e: React.PointerEvent) => {
+    const el = cur.current, c = cvs.current;
+    if (!el || !c || e.pointerType !== "mouse") return;
+    const b = c.getBoundingClientRect();
+    el.style.transform = `translate(${e.clientX - b.left}px, ${e.clientY - b.top}px)`;
+    el.classList.add("on");
+  };
+  const hideCloth = () => cur.current?.classList.remove("on");
+
   const wipe = (e: React.PointerEvent) => {
+    moveCloth(e);
     const c = cvs.current;
     if (!c || doneRef.current) return;
     const b = c.getBoundingClientRect();
@@ -102,10 +114,10 @@ export function Inspection() {
     const x = c.getContext("2d");
     if (!x) return;
     start.current ??= performance.now();
-    const r = Math.max(34, Math.min(b.width, b.height) * .06);
+    const r = 60; // matches the 120px .game-cloth ring
     x.globalCompositeOperation = "destination-out";
     const g = x.createRadialGradient(px, py, 0, px, py, r);
-    g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(.6, "rgba(0,0,0,.9)"); g.addColorStop(1, "rgba(0,0,0,0)");
+    g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(.85, "rgba(0,0,0,.95)"); g.addColorStop(1, "rgba(0,0,0,0)");
     x.fillStyle = g; x.beginPath(); x.arc(px, py, r, 0, Math.PI * 2); x.fill();
 
     // coverage, and any problem area the cloth just passed over
@@ -151,7 +163,8 @@ export function Inspection() {
       <div ref={scene} className={`game-scene ${done ? "spotless" : ""}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="game-clean" src="/images/challenge-clean.jpg" alt="Illustrative meeting room that needs a closer look" />
-        <canvas key={round} ref={cvs} className="game-canvas" aria-hidden="true" onPointerMove={wipe} onPointerDown={wipe} />
+        <canvas key={round} ref={cvs} className="game-canvas" aria-hidden="true" onPointerMove={wipe} onPointerDown={wipe} onPointerLeave={hideCloth} />
+        {!done && <span ref={cur} className="game-cloth" aria-hidden="true" />}
         <div ref={sparks} className="game-sparks" aria-hidden="true" />
         <i className="game-sweep" aria-hidden="true" />
         {bursts.map((b) => (

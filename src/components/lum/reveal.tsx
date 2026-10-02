@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUpRight, Pause, Play } from "lucide-react";
-import { Tumble } from "./cta";
+import { Cta } from "./cta";
 
 /* =====================================================================
    OPENING — a copy of the original site's scroll opening. A sticky full
@@ -54,24 +54,22 @@ export function Opening() {
   };
 
   return (
-    <section ref={sec} className="scroll-opening scroll-enhanced" aria-label="Discover Luminari Cleaning">
+    <section ref={sec} className="scroll-opening scroll-enhanced dark" aria-label="Discover Luminari Cleaning">
       <div className="scroll-stage">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="opening-workplace" src="/images/spaces/office-studio.jpg" alt="" fetchPriority="high" />
         <div className="opening-shade" aria-hidden="true" />
         <div className="opening-shutters" aria-hidden="true"><span /><span /><span /></div>
         <div ref={msg} className="opening-message">
-          <p className="og-eyebrow">Commercial cleaning · Toronto &amp; Vaughan</p>
+          <p className="eyebrow">Commercial cleaning · Toronto &amp; Vaughan</p>
           <div className="opening-emblem" aria-hidden="true"><i /><i /><i /></div>
-          <h2>A clean space.<br />A clearer mind.</h2>
-          <p className="opening-lead">Leave the details with us.</p>
+          <h2 className="h1">A clean space.<br />A clearer mind.</h2>
+          <p className="lede opening-lead">Leave the details with us.</p>
         </div>
         <div ref={rev} className="opening-reveal" aria-hidden="true">
-          <span className="og-eyebrow">The Luminari standard</span>
-          <p>Ready for<br /><em>what’s next.</em></p>
-          <a className="og-button cream" href="#website" onClick={skip} aria-label="Step inside">
-            <Tumble>Step inside</Tumble><ArrowUpRight strokeWidth={1.5} aria-hidden="true" />
-          </a>
+          <span className="eyebrow">The Luminari standard</span>
+          <p className="h1">Ready for<br /><em>what’s next.</em></p>
+          <Cta href="#website" onClick={skip}>Step inside</Cta>
         </div>
         <div className="opening-bottom">
           <a href="#website" className="scroll-cue" onClick={skip}>Scroll to reveal <ArrowDown strokeWidth={1.5} aria-hidden="true" /></a>
@@ -88,24 +86,24 @@ export function Opening() {
    ===================================================================== */
 export function Hero() {
   return (
-    <section className="og-hero" id="website" tabIndex={-1} aria-labelledby="hero-h">
+    <section className="og-hero dark" id="website" tabIndex={-1} aria-labelledby="hero-h">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className="og-hero-image" src="/images/workplace.jpg" alt="Sunlit contemporary workplace with meeting tables and greenery" fetchPriority="high" />
       <div className="og-hero-content">
-        <p className="og-eyebrow"><span className="og-dot" /> Commercial janitorial · Toronto &amp; Vaughan</p>
-        <h1 id="hero-h" className="main-hero-headline">
+        <p className="eyebrow og-hero-eyebrow"><span className="og-dot" /> Commercial janitorial · Toronto &amp; Vaughan</p>
+        <h1 id="hero-h" className="h1 main-hero-headline">
           <span style={{ ["--i" as string]: 0 }}>Tomorrow’s</span>
           <span style={{ ["--i" as string]: 1 }}>first impression.</span>
           <span style={{ ["--i" as string]: 2 }}>Handled tonight.</span>
         </h1>
-        <p className="og-hero-copy">Commercial and residential cleaning that takes the details off your list. Familiar people. A clear scope. A workplace ready for the day ahead.</p>
+        <p className="lede og-hero-copy">Commercial and residential cleaning that takes the details off your list. Familiar people. A clear scope. A workplace ready for the day ahead.</p>
         <div className="og-actions">
-          <a className="og-button cream" href="#walkthrough" aria-label="Request an assessment"><Tumble>Request an assessment</Tumble><ArrowUpRight strokeWidth={1.5} aria-hidden="true" /></a>
-          <a className="og-text-link" href="/report">Read the report <ArrowUpRight strokeWidth={1.5} aria-hidden="true" /></a>
+          <Cta href="#walkthrough">Request an assessment</Cta>
+          <Cta href="/report" kind="secondary">Read the report</Cta>
         </div>
       </div>
       <div className="og-hero-note">
-        <span className="og-eyebrow">The Luminari standard</span>
+        <span className="eyebrow">The Luminari standard</span>
         <strong>The details.<br />Taken care of.</strong>
         <span>01 / CLEAN &nbsp; 02 / CHECK &nbsp; 03 / COMMUNICATE</span>
       </div>

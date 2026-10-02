@@ -203,7 +203,7 @@ export default function Home() {
               <p className="quote">Good service starts with taking responsibility.</p>
               <p className="body">Betzalel coordinates client communication, checks in on the work, and stays involved when something needs attention. Behind every clean is a team learning your space, following your agreed scope, and keeping the details in view.</p>
               <p className="eyebrow cite">Toronto <span aria-hidden="true">·</span> Vaughan <span aria-hidden="true">·</span> Greater Toronto Area</p>
-              <Cta href="#walkthrough" kind="secondary">Talk to Betzalel</Cta>
+              <Cta href="#walkthrough">Talk to Betzalel</Cta>
             </article>
           </StickyStage>
         </section>

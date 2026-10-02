@@ -88,9 +88,9 @@ ul, ol { list-style: none; padding: 0; }
 .btn-light:hover { background: var(--taupe); border-color: var(--taupe); }
 
 /* ---------- nav ---------- */
-.nav { position: sticky; top: 0; z-index: 50; background: var(--paper); border-bottom: 1px solid var(--line); }
+.nav { position: sticky; top: 0; z-index: 50; background: var(--paper); }
 /* scroll progress: a 2px rule under the nav that fills left to right with the page */
-.progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; pointer-events: none; }
+.progress { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; height: 2px; pointer-events: none; }
 .progress i { display: block; height: 100%; background: var(--slate); transform: scaleX(var(--p, 0)); transform-origin: left; }
 .nav-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 84px; }
 .nav-side { display: flex; align-items: center; gap: 28px; }
@@ -731,6 +731,14 @@ ul, ol { list-style: none; padding: 0; }
   .og-hero-bottom span:first-child { max-width: 140px; }
   .og-button { gap: 15px; padding: 17px 20px; }
 }
+/* opening + hero on the site system: .eyebrow / .h1 / .lede / .cta, dark context */
+.og-hero-eyebrow { display: flex; align-items: center; gap: 12px; }
+.opening-message .eyebrow { text-align: center; }
+.opening-message .h1, .opening-reveal .h1, .main-hero-headline { font: 400 clamp(46px, 6.6vw, 96px)/1.02 var(--display); letter-spacing: -.02em; }
+.opening-lead { color: var(--taupe) !important; }
+.og-hero-copy { max-width: 42ch; }
+.og-actions { gap: 32px; }
+.og-hero-note .eyebrow { color: var(--grey); }
 @media (prefers-reduced-motion: reduce) { .og-hero-image, .og-hero-content, .main-hero-headline > span { animation: none; } }
 
 /* =====================================================================
@@ -765,3 +773,11 @@ ul, ol { list-style: none; padding: 0; }
 
 /* owner photo */
 img.avatar { object-fit: cover; object-position: center 20%; background: var(--line); }
+
+/* the last look: a big cloth ring replaces the pointer over the dirty room */
+@media (hover: hover) and (pointer: fine) { .game-canvas { cursor: none; } }
+.game-cloth { position: absolute; z-index: 4; top: 0; left: 0; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; pointer-events: none;
+  border: 2px solid #fff; background: rgba(255, 255, 255, .16); box-shadow: 0 0 0 1px rgba(42, 45, 49, .25), 0 6px 24px rgba(42, 45, 49, .25);
+  opacity: 0; transition: opacity .2s ease; will-change: transform; }
+.game-cloth::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px; border-radius: 50%; background: #fff; }
+.game-cloth.on { opacity: 1; }

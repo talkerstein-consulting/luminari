@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import type React from "react";
 
 /* Per-letter stagger for the tumble (Aria Noir: --stagger-char). */
 const STEP_MS = 22;
@@ -23,7 +24,7 @@ export function Tumble({ children }: { children: string }) {
 
 /* Two CTAs. Main is the outlined box; secondary is the underline alone. */
 export function Cta({ href, children, kind = "main", className = "", label, onClick }: {
-  href: string; children: string; kind?: "main" | "secondary"; className?: string; label?: string; onClick?: () => void;
+  href: string; children: string; kind?: "main" | "secondary"; className?: string; label?: string; onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }) {
   return (
     <a href={href} onClick={onClick} aria-label={label ?? children} className={`cta cta-${kind} ${className}`}>
