@@ -9,9 +9,19 @@ const caslon = Libre_Caslon_Display({ variable: "--font-caslon", weight: "400", 
 const jost = Jost({ variable: "--font-jost", weight: ["400", "500"], subsets: ["latin"] });
 const manrope = Manrope({ variable: "--font-manrope", weight: ["400", "500", "600", "700"], subsets: ["latin"] });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://luminaricleaning.com";
+const title = "Luminari Cleaning | Commercial janitorial in Toronto & Vaughan";
+const description = "Recurring commercial janitorial in Toronto and Vaughan. A familiar team, clear communication, and a workplace ready for your day.";
+
+// The share image (opengraph-image.jpg / twitter-image.jpg) is the opening hero room, and icon.svg / apple-icon.png are the brand mark.
 export const metadata: Metadata = {
-  title: "Luminari Cleaning | Your workplace, consistently cared for.",
-  description: "Recurring commercial janitorial in Toronto and Vaughan. A familiar team, clear communication, and a workplace ready for your day.",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  applicationName: "Luminari Cleaning",
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", siteName: "Luminari Cleaning", locale: "en_CA", url: "/", title, description },
+  twitter: { card: "summary_large_image", title, description },
 };
 
 // The intro plays once per session; this runs before paint so repeat views never flash it.
