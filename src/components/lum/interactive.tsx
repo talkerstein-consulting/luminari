@@ -121,30 +121,6 @@ export function WalkthroughForm() {
   );
 }
 
-/* ---------- Footer link groups as tabs ---------- */
-export function FooterTabs({ cols }: { cols: { title: string; links: string[][] }[] }) {
-  const [active, setActive] = useState(0);
-  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
-  const pick = (i: number) => { const n = (i + cols.length) % cols.length; setActive(n); tabs.current[n]?.focus(); };
-  return (
-    <div className="ftabs">
-      <div role="tablist" aria-label="Footer" className="ftabs-list">
-        {cols.map((c, i) => (
-          <button key={c.title} ref={(el) => { tabs.current[i] = el; }} role="tab" type="button" id={`ft-${i}`}
-            aria-selected={active === i} aria-controls="ft-panel" tabIndex={active === i ? 0 : -1}
-            onClick={() => setActive(i)}
-            onKeyDown={(e) => { if (e.key === "ArrowRight") pick(active + 1); if (e.key === "ArrowLeft") pick(active - 1); }}>
-            {c.title}
-          </button>
-        ))}
-      </div>
-      <ul id="ft-panel" role="tabpanel" aria-labelledby={`ft-${active}`} key={active} className="ftabs-panel">
-        {cols[active].links.map(([label, href]) => <li key={label}><a className="u" href={href}>{label}</a></li>)}
-      </ul>
-    </div>
-  );
-}
-
 /* ---------- Sticky stage: heading rises to centre, lifts out, the card rises in ----------
    The section is tall; its inner stage sticks for the length of the scroll, and --p (0→1)
    is how far through the section the reader is. CSS maps --p to each beat. */

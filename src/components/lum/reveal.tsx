@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowUpRight, Pause, Play } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { ArrowDown } from "lucide-react";
 import { Cta } from "./cta";
 
 /* =====================================================================
@@ -20,6 +20,8 @@ export function Opening() {
     if (!el) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     let raf = 0;
+    let dollied = false;
+    let timer = 0;
     const update = () => {
       raf = 0;
       const r = el.getBoundingClientRect();
@@ -27,6 +29,22 @@ export function Opening() {
       const p = Math.max(0, Math.min(1, -r.top / Math.max(1, travel)));
       el.style.setProperty("--progress", String(p));
       const second = p > 0.6;
+      if (second && !reduce.matches && !dollied) {
+        // the room starts moving as the message lands; after 3s, on to the next slide
+        dollied = true;
+        el.classList.add("dolly");
+        timer = window.setTimeout(() => {
+          const t = document.getElementById("website");
+          if (t && parseFloat(el.style.getPropertyValue("--progress")) > 0.5) {
+            if (window.__lenis) window.__lenis.scrollTo(t, { duration: 1.4 });
+            else t.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 3000);
+      } else if (p < 0.5 && dollied) {
+        dollied = false;
+        window.clearTimeout(timer);
+        el.classList.remove("dolly");
+      }
       msg.current?.setAttribute("aria-hidden", String(second));
       if (rev.current) { rev.current.inert = !second; rev.current.setAttribute("aria-hidden", String(!second)); }
     };
@@ -39,7 +57,7 @@ export function Opening() {
     window.addEventListener("resize", onScroll);
     reduce.addEventListener("change", mode);
     mode();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); reduce.removeEventListener("change", mode); };
+    return () => { cancelAnimationFrame(raf); window.clearTimeout(timer); window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); reduce.removeEventListener("change", mode); };
   }, []);
 
   // "Skip to website" and the cue jump straight past the opening to the hero
@@ -63,7 +81,7 @@ export function Opening() {
         <div ref={msg} className="opening-message">
           <p className="eyebrow">Commercial cleaning · Toronto &amp; Vaughan</p>
           <div className="opening-emblem" aria-hidden="true"><i /><i /><i /></div>
-          <h2 className="h1">A clean space.<br />A clearer mind.</h2>
+          <h1 className="h1">A clean space.<br />A clearer mind.</h1>
           <p className="lede opening-lead">Leave the details with us.</p>
         </div>
         <div ref={rev} className="opening-reveal" aria-hidden="true">
@@ -73,7 +91,6 @@ export function Opening() {
         </div>
         <div className="opening-bottom">
           <a href="#website" className="scroll-cue" onClick={skip}>Scroll to reveal <ArrowDown strokeWidth={1.5} aria-hidden="true" /></a>
-          <a href="#website" className="opening-skip" onClick={skip}>Skip to website <ArrowUpRight strokeWidth={1.5} aria-hidden="true" /></a>
         </div>
       </div>
     </section>
@@ -81,48 +98,11 @@ export function Opening() {
 }
 
 /* =====================================================================
-   HERO — a copy of the original site's hero: slate panel, the photo on the
-   right, the headline rising line by line, the standard card, the bottom bar.
-   ===================================================================== */
-export function Hero() {
-  return (
-    <section className="og-hero dark" id="website" tabIndex={-1} aria-labelledby="hero-h">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className="og-hero-image" src="/images/workplace.jpg" alt="Sunlit contemporary workplace with meeting tables and greenery" fetchPriority="high" />
-      <div className="og-hero-content">
-        <p className="eyebrow og-hero-eyebrow"><span className="og-dot" /> Commercial janitorial · Toronto &amp; Vaughan</p>
-        <h1 id="hero-h" className="h1 main-hero-headline">
-          <span style={{ ["--i" as string]: 0 }}>Tomorrow’s</span>
-          <span style={{ ["--i" as string]: 1 }}>first impression.</span>
-          <span style={{ ["--i" as string]: 2 }}>Handled tonight.</span>
-        </h1>
-        <p className="lede og-hero-copy">Commercial and residential cleaning that takes the details off your list. Familiar people. A clear scope. A workplace ready for the day ahead.</p>
-        <div className="og-actions">
-          <Cta href="#walkthrough">Request an assessment</Cta>
-          <Cta href="/report" kind="secondary">Read the report</Cta>
-        </div>
-      </div>
-      <div className="og-hero-note">
-        <span className="eyebrow">The Luminari standard</span>
-        <strong>The details.<br />Taken care of.</strong>
-        <span>01 / CLEAN &nbsp; 02 / CHECK &nbsp; 03 / COMMUNICATE</span>
-      </div>
-      <div className="og-hero-bottom">
-        <span>Clean spaces. Clear expectations.</span>
-        <a href="#spaces">Discover our care <ArrowDown strokeWidth={1.5} aria-hidden="true" /></a>
-      </div>
-    </section>
-  );
-}
-
-/* =====================================================================
-   CLIENT LOGOS — an endless, slow drift. Pauses on hover, on focus, and
-   with the button (motion that runs longer than 5s needs a pause).
+   CLIENT LOGOS — an endless, slow drift. Pauses on hover and on focus.
    ===================================================================== */
 export function LogoMarquee({ logos }: { logos: { src: string; alt: string }[] }) {
-  const [paused, setPaused] = useState(false);
   return (
-    <div className={`marq ${paused ? "paused" : ""}`}>
+    <div className="marq">
       <div className="marq-window">
         <div className="marq-track">
           {[0, 1].map((copy) => (
@@ -137,10 +117,6 @@ export function LogoMarquee({ logos }: { logos: { src: string; alt: string }[] }
           ))}
         </div>
       </div>
-      <button type="button" className="marq-pause" aria-pressed={paused} onClick={() => setPaused(!paused)}>
-        {paused ? <Play strokeWidth={1.5} aria-hidden="true" /> : <Pause strokeWidth={1.5} aria-hidden="true" />}
-        {paused ? "Resume logo movement" : "Pause logo movement"}
-      </button>
     </div>
   );
 }

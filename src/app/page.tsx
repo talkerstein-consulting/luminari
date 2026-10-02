@@ -1,6 +1,6 @@
 import { BadgeCheck, CalendarCheck, Mail, Phone, ShieldCheck, UserCheck } from "lucide-react";
 import { Inspection } from "@/components/lum/inspection";
-import { Hero, LogoMarquee, Opening } from "@/components/lum/reveal";
+import { LogoMarquee, Opening } from "@/components/lum/reveal";
 import { Assessment } from "@/components/lum/assessment";
 import { SiteFooter } from "@/components/lum/footer";
 import { Cta } from "@/components/lum/cta";
@@ -87,11 +87,8 @@ export default function Home() {
       <Nav />
 
       <main id="main">
-        {/* HERO */}
-        <Hero />
-
         {/* TRUSTED BY */}
-        <section className="clients" aria-labelledby="clients-h">
+        <section className="clients" id="website" tabIndex={-1} aria-labelledby="clients-h">
           <div className="wrap">
             <Reveal as="h2" id="clients-h" className="eyebrow">Trusted by.</Reveal>
             <Reveal delay={100}><LogoMarquee logos={clients} /></Reveal>

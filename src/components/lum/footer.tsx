@@ -1,6 +1,5 @@
-import { Logo } from "./logo";
+import { FooterLogo } from "./footer-logo";
 import { TcgBadge } from "./tcg-badge";
-import { FooterTabs } from "./interactive";
 
 /* Shared footer. `base` prefixes the in-page links so they still reach the home page
    sections from other routes (e.g. "/" on /report). */
@@ -8,7 +7,7 @@ export function SiteFooter({ base = "" }: { base?: string }) {
   const cols = [
     { title: "Services", links: [
       ["Janitorial services", "#services"], ["Office cleaning", "#services"], ["School cleaning", "#services"],
-      ["Restaurant cleaning", "#services"], ["Residential contracts", "#services"], ["Deep cleaning", "#services"],
+      ["Restaurant cleaning", "#services"], ["Residential contracts", "#services"], ["Short-term rental cleaning", "#services"], ["Deep cleaning", "#services"],
     ] },
     { title: "Company", links: [["Areas of specialty", "#spaces"], ["Our standards", "#standards"], ["Service areas", "#contact"], ["FAQs", "#faq-h"]] },
     { title: "Start", links: [["Request an assessment", "#walkthrough"], ["Read the report", "/report"], ["Take the self-assessment", "#assessment"]] },
@@ -22,7 +21,14 @@ export function SiteFooter({ base = "" }: { base?: string }) {
           <a className="u" href="tel:+18482857711">+1 (848) 285-7711</a>
           <a className="u" href="mailto:Admin@luminaricleaning.com">Admin@luminaricleaning.com</a>
         </address>
-        <FooterTabs cols={cols} />
+        <nav className="footer-cols" aria-label="Footer">
+          {cols.map((c) => (
+            <div key={c.title}>
+              <h2 className="eyebrow">{c.title}</h2>
+              <ul>{c.links.map(([label, href]) => <li key={label}><a className="u" href={href}>{label}</a></li>)}</ul>
+            </div>
+          ))}
+        </nav>
         <div className="footer-legal">
           <p>Luminari Cleaning © 2026 · Toronto · Vaughan · Greater Toronto Area</p>
           <ul>
@@ -32,7 +38,7 @@ export function SiteFooter({ base = "" }: { base?: string }) {
           </ul>
         </div>
       </div>
-      <a className="footer-logo" href={base || "#"} aria-label="Luminari Cleaning, home"><Logo /></a>
+      <FooterLogo base={base} />
       <div className="credit"><TcgBadge tone="ink" /></div>
     </footer>
   );

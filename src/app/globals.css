@@ -202,7 +202,7 @@ ul, ol { list-style: none; padding: 0; }
 /* ---------- owner ---------- */
 .owner { display: grid; justify-items: center; gap: 16px; max-width: 760px; margin: 0 auto; padding: clamp(40px, 6vw, 72px) clamp(24px, 6vw, 72px); background: var(--paper); border: 1px solid var(--line); text-align: center; }
 .owner-name { font: 400 30px/1.2 var(--display); }
-.avatar { display: grid; place-items: center; width: 112px; height: 112px; margin-bottom: 8px; border-radius: 50%; background: var(--slate); color: var(--taupe); font: 400 38px/1 var(--display); letter-spacing: .04em; box-shadow: 0 0 0 6px var(--paper), 0 0 0 7px var(--line); }
+.avatar { display: block; width: clamp(220px, 26vw, 340px); height: auto; aspect-ratio: 1; margin-bottom: 12px; border-radius: 50%; object-fit: cover; object-view-box: inset(0 5.2% 25% 19.8%); background: var(--slate); box-shadow: 0 0 0 10px var(--paper), 0 0 0 11px var(--line); }
 .owner .quote { margin-top: 12px; font: 400 clamp(28px, 3.4vw, 44px)/1.15 var(--display); letter-spacing: -.01em; text-wrap: balance; }
 .owner .body { max-width: 56ch; margin-top: 8px; }
 .owner .cite { margin-top: 4px; }
@@ -227,7 +227,7 @@ ul, ol { list-style: none; padding: 0; }
   transform: translateY(calc((1 - var(--c)) * 70vh)); opacity: clamp(0, var(--c) * 1.6, 1); will-change: transform, opacity; }
 .stage-card .owner { margin: 0 auto; }
 @media (max-width: 1100px) { .stage-pin { top: 72px; height: calc(100vh - 72px); } }
-@media (max-height: 760px) { .owner { gap: 10px; padding-block: 32px; } .avatar { width: 84px; height: 84px; font-size: 28px; } .owner .quote { font-size: clamp(24px, 3vw, 34px); } }
+@media (max-height: 760px) { .owner { gap: 10px; padding-block: 32px; } .avatar { width: clamp(150px, 30vh, 220px); } .owner .quote { font-size: clamp(24px, 3vw, 34px); } }
 @media (prefers-reduced-motion: reduce) {
   .stage { height: auto; padding: var(--section) 0; }
   .stage-pin { position: static; height: auto; display: grid; gap: 56px; }
@@ -300,8 +300,23 @@ ul, ol { list-style: none; padding: 0; }
 .footer-logo .logo { --fs: min(calc((100vw - 2 * var(--gutter)) / 5.75), 214px); }
 .footer-logo .logo b { font-size: var(--fs); }
 .footer-logo .logo span { font-size: calc(var(--fs) * 8 / 22); margin-top: calc(var(--fs) * 4 / 22); }
+.footer-logo { position: relative; }
+.footer-logo.armed:not(.go) .lum-mark .bar { transform: scaleY(0); }
+.footer-logo.armed:not(.go) .lum-mark .arc { stroke-dashoffset: 1; }
+.footer-logo.armed:not(.go) .logo b { opacity: 0; }
+.footer-logo .lum-mark .bar { transform-box: fill-box; transform-origin: 50% 100%; }
+.footer-logo .lum-mark .arc { stroke-dasharray: 1; }
+.footer-logo.go .lum-mark .bar { animation: bar-up .9s var(--ease) both; }
+.footer-logo.go .lum-mark .b2 { animation-delay: .15s; }
+.footer-logo.go .lum-mark .b3 { animation-delay: .3s; }
+.footer-logo.go .lum-mark .arc { animation: arc-draw 1s var(--ease) .55s both; }
+.footer-logo.go .logo b { animation: name-in 1s var(--ease) 1s both, sheen 1.6s ease-in-out 1.7s both; background: linear-gradient(100deg, currentColor 42%, var(--taupe) 50%, currentColor 58%) 120% 0 / 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+@keyframes bar-up { from { transform: scaleY(0); } }
+@keyframes arc-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes name-in { from { opacity: 0; letter-spacing: .5em; } }
+@keyframes sheen { to { background-position: -20% 0; } }
 .footer-contact { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0 36px; margin-top: 0; font-style: normal; font-size: 14px; }
-.footer-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 200px)); justify-content: center; gap: 40px; width: 100%; margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--line-dark); }
+.footer-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 260px)); justify-content: center; gap: 56px; width: 100%; margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--line-dark); }
 .footer-cols .eyebrow { margin-bottom: 12px; color: var(--taupe); }
 .footer-cols ul { display: grid; justify-items: center; }
 .footer-cols .u { min-height: 36px; font-weight: 400; }
@@ -312,14 +327,6 @@ ul, ol { list-style: none; padding: 0; }
 .footer-legal .u { font-size: 12px; }
 @media (max-width: 640px) { .footer-cols { grid-template-columns: minmax(0, 1fr); gap: 32px; } .footer-contact { flex-direction: column; } }
 
-/* footer tabs */
-.ftabs { width: 100%; margin-top: 56px; padding-top: 40px; border-top: 1px solid var(--line-dark); }
-.ftabs-list { display: flex; justify-content: center; gap: 8px; }
-.ftabs-list button { min-height: 44px; padding: 0 20px; border: 1px solid transparent; font: 600 11px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.55); transition: color .3s var(--ease), border-color .3s var(--ease); }
-.ftabs-list button:hover { color: var(--white); }
-.ftabs-list button[aria-selected="true"] { color: var(--taupe); border-color: var(--line-dark); }
-.ftabs-panel { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 32px; min-height: 88px; margin-top: 24px; animation: rise .5s var(--ease) both; }
-.ftabs-panel .u { font-weight: 400; }
 
 /* ---------- CTAs: letters tumble, a rule sweeps under the label (Aria Noir) ----------
    Main = the outlined box. Secondary = the underline alone. Both share the tumble and the sweep. */
@@ -446,17 +453,14 @@ ul, ol { list-style: none; padding: 0; }
    CLIENT LOGOS — the moving strip
    ===================================================================== */
 .clients { padding: clamp(72px, 8vw, 112px) 0 0; text-align: center; }
-.marq { margin-top: 40px; }
-.marq-window { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marq { margin: 48px calc(50% - 50vw) 0; }
+.marq-window { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); }
 .marq-track { display: flex; width: max-content; animation: marq 48s linear infinite; }
-.marq ul { display: flex; align-items: center; gap: clamp(48px, 6vw, 88px); padding-right: clamp(48px, 6vw, 88px); }
-.marq li { flex: none; display: flex; align-items: center; height: 48px; }
-.marq img { width: auto; height: auto; max-height: 42px; max-width: 128px; object-fit: contain; opacity: .6; transition: opacity .4s var(--ease); }
+.marq ul { display: flex; align-items: center; gap: clamp(72px, 9vw, 150px); padding-right: clamp(72px, 9vw, 150px); }
+.marq li { flex: none; display: flex; align-items: center; height: clamp(72px, 7vw, 104px); }
+.marq img { width: auto; height: auto; max-height: clamp(60px, 6vw, 92px); max-width: clamp(170px, 16vw, 250px); object-fit: contain; opacity: .6; transition: opacity .4s var(--ease); }
 .marq img:hover { opacity: 1; }
-.marq-window:hover .marq-track, .marq.paused .marq-track, .marq:focus-within .marq-track { animation-play-state: paused; }
-.marq-pause { margin: 22px auto 0; display: flex; align-items: center; gap: 8px; min-height: 44px; font: 500 13px/1 var(--sans); color: var(--grey); }
-.marq-pause svg { width: 14px; height: 14px; }
-.marq-pause:hover { color: var(--ink); }
+.marq-window:hover .marq-track, .marq:focus-within .marq-track { animation-play-state: paused; }
 @keyframes marq { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .marq-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; } .marq ul[aria-hidden] { display: none; } .marq ul { flex-wrap: wrap; justify-content: center; } }
 
@@ -671,6 +675,9 @@ ul, ol { list-style: none; padding: 0; }
 .opening-reveal p { margin: 20px 0 32px; }
 .opening-reveal em { font-style: normal; color: var(--taupe); }
 .opening-reveal[inert] { pointer-events: none; }
+/* the room starts moving as the second message lands: a 3s push-in through the space, then on to the next slide */
+.scroll-enhanced.dolly .opening-workplace { animation: dolly 3s cubic-bezier(.45, .05, .35, 1) forwards; }
+@keyframes dolly { from { transform: scale(1) translate3d(0, 0, 0); } to { transform: scale(1.5) translate3d(-1.5%, 1%, 0); } }
 @media (max-width: 800px) { .opening-message h2 { font-size: clamp(48px, 9vw, 70px); } }
 @media (max-width: 640px) {
   .scroll-opening.scroll-enhanced { height: 200svh; }
@@ -781,3 +788,42 @@ img.avatar { object-fit: cover; object-position: center 20%; background: var(--l
   opacity: 0; transition: opacity .2s ease; will-change: transform; }
 .game-cloth::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px; border-radius: 50%; background: #fff; }
 .game-cloth.on { opacity: 1; }
+
+/* ---------- large monitors ----------
+   At 100% browser zoom on a wide screen the design read small and lost in the margins; it should look
+   like it does at 125–150% zoom. Widen the page and scale the type up in two steps. (CSS `zoom` is not
+   used: it breaks the sticky, scroll-driven sections.) */
+@media (min-width: 1500px) {
+  :root { --max: 1560px; --gutter: 48px; }
+  .eyebrow { font-size: 13px; }
+  .h3 { font-size: 21px; }
+  .lede { font-size: 22px; }
+  .body { font-size: 17px; }
+  .u { font-size: 16.5px; }
+  .btn { min-height: 58px; padding: 0 36px; font-size: 16px; }
+  .nav-links { gap: 40px; }
+  .nav-logo .logo { font-size: 9.2px; }
+  .spaces { gap: 32px; }
+  .spaces figcaption .h3 { font-size: 26px; }
+  .head { max-width: 920px; }
+  .footer-contact { font-size: 16px; }
+  .footer-legal, .footer-legal .u { font-size: 14px; }
+}
+@media (min-width: 1900px) {
+  :root { --max: 1860px; --gutter: 56px; }
+  .eyebrow { font-size: 14px; }
+  .h2 { font-size: 72px; }
+  .h3 { font-size: 24px; }
+  .lede { font-size: 25px; }
+  .body { font-size: 19px; }
+  .u { font-size: 18.5px; }
+  .btn { min-height: 64px; padding: 0 42px; font-size: 18px; }
+  .nav-links { gap: 48px; }
+  .nav-logo .logo { font-size: 10.6px; }
+  .spaces { gap: 40px; }
+  .spaces figcaption .h3 { font-size: 30px; }
+  .head { max-width: 1040px; }
+  .owner { max-width: 920px; }
+  .footer-contact { font-size: 18px; }
+  .footer-legal, .footer-legal .u { font-size: 15px; }
+}
