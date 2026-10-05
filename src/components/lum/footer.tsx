@@ -6,9 +6,9 @@ import { TcgBadge } from "./tcg-badge";
 export function SiteFooter({ base = "" }: { base?: string }) {
   const cols = [
     { title: "Services", links: [
-      ["All services", "/services"], ["Janitorial services", "/services#janitorial"], ["Office cleaning", "/services#office"],
-      ["Restaurant cleaning", "/services#restaurant"], ["Residential contracts", "/services#residential"], ["Deep cleaning", "/services#deep"],
-      ["Post-construction", "/services#post-construction"], ["Move-in & move-out", "/services#move"],
+      ["All services", "/services"], ["Janitorial services", "/services/janitorial-services"], ["Office cleaning", "/services/office-cleaning"],
+      ["Restaurant cleaning", "/services/restaurant-cleaning"], ["Residential cleaning", "/services/residential-cleaning"], ["Deep cleaning", "/services/deep-cleaning"],
+      ["Post-construction", "/services/post-construction-cleaning"], ["Move-in & move-out", "/services/move-in-move-out-cleaning"],
     ] },
     { title: "Company", links: [["Areas of specialty", "#spaces"], ["Our standards", "#standards"], ["Service areas", "#contact"], ["FAQs", "#faq-h"]] },
     { title: "Start", links: [["Request an assessment", "#walkthrough"], ["Read the report", "/report"], ["Take the self-assessment", "#assessment"]] },

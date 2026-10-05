@@ -24,7 +24,7 @@ export default function Services() {
               <span className="eyebrow">Luminari cleaning services</span>
               <h1 className="h1">Professional cleaning.<br /><em>For every chapter of your space.</em></h1>
               <p className="lede">Keep your workplace cared for day after day, or arrange a focused clean for a move, renovation or fresh start.</p>
-              <Cta href="/#walkthrough">Request a walkthrough</Cta>
+              <Cta href="/#walkthrough">Request a Quote</Cta>
             </Reveal>
           </div>
         </header>
@@ -41,12 +41,12 @@ export default function Services() {
                   <li key={s.id} id={s.id} style={{ ["--i" as string]: i }}>
                     <span className="num">{pad(i + 1)}</span>
                     <span className="eyebrow">{s.tag}</span>
-                    <h3 className="h3">{s.title}</h3>
+                    <h3 className="h3"><a className="svc-link" href={`/services/${s.id}`}>{s.title}</a></h3>
                     <p className="body">{s.body}</p>
                   </li>
                 ))}
               </ul>
-              <div className="svc-foot"><Cta href="/#walkthrough">Request a walkthrough</Cta></div>
+              <div className="svc-foot"><Cta href="/#walkthrough">Request a Quote</Cta></div>
             </div>
           </PinProgress>
         </section>
@@ -57,7 +57,7 @@ export default function Services() {
               <span className="eyebrow">Your space. Your schedule. A clear scope from day one.</span>
               <h2 id="cta-h" className="h2">Good mornings start the night before.</h2>
               <p className="lede">Tell us about your space. We’ll arrange a walkthrough and send a tailored scope and quote.</p>
-              <Cta href="/#walkthrough">Let’s take care of your space</Cta>
+              <Cta href="/#walkthrough">Request a Quote</Cta>
             </Reveal>
           </div>
         </section>
