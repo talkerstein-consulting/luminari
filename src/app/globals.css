@@ -827,3 +827,6 @@ img.avatar { object-fit: cover; object-position: center 20%; background: var(--l
   .footer-contact { font-size: 18px; }
   .footer-legal, .footer-legal .u { font-size: 15px; }
 }
+
+/* home: the spaces grid hands off to the services page */
+.spaces-foot { display: flex; justify-content: center; margin-top: clamp(40px, 5vw, 64px); }

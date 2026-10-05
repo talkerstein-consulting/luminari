@@ -5,7 +5,7 @@ import { Assessment } from "@/components/lum/assessment";
 import { SiteFooter } from "@/components/lum/footer";
 import { Cta } from "@/components/lum/cta";
 import { Nav } from "@/components/lum/nav";
-import { Faq, PinProgress, Reveal, StickyStage, WalkthroughForm } from "@/components/lum/interactive";
+import { Faq, Reveal, StickyStage, WalkthroughForm } from "@/components/lum/interactive";
 
 const clients = [
   { src: "unger-law", alt: "Unger Law" },
@@ -31,16 +31,6 @@ const proofs = [
   { icon: BadgeCheck, label: "WSIB coverage" },
   { icon: UserCheck, label: "Owner-led oversight" },
   { icon: CalendarCheck, label: "Regular, familiar cleaners" },
-];
-
-const services = [
-  ["Everyday care", "Recurring janitorial", "Reliable cleaning for offices and shared commercial spaces, with a regular schedule and a scope built around your business."],
-  ["Ready for service", "Restaurant cleaning", "Dining areas, guest washrooms and agreed service spaces, cleaned around your operating schedule."],
-  ["A home, cared for", "Residential contracts", "Recurring cleaning for homes and apartments, with a schedule and scope agreed around your household or property."],
-  ["A better workday", "Office cleaning", "Workstations, meeting rooms, washrooms and kitchens, ready for the people who use them."],
-  ["A thorough reset", "Deep cleaning", "A focused clean for built-up dust, overlooked corners and areas that need more attention than the daily routine."],
-  ["Ready for the next chapter", "Post-construction cleaning", "After the work is finished, prepare your space for use with a cleaning scope tailored to the project."],
-  ["A fresh start", "Move-in & move-out cleaning", "Prepare a space for its next occupants, or leave it ready for handover, with a clearly agreed checklist."],
 ];
 
 const standards = [
@@ -104,7 +94,7 @@ export default function Home() {
             <ul className="spaces">
               {spaces.map((s, i) => (
                 <Reveal as="li" key={s.img} delay={i * 90}>
-                  <a href="#services">
+                  <a href="/services">
                     <figure>
                       <div className="img">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -122,30 +112,8 @@ export default function Home() {
             <Reveal as="ul" className="proofs" aria-label="Credentials">
               {proofs.map(({ icon: Icon, label }) => <li key={label}><Icon {...ic} />{label}</li>)}
             </Reveal>
+            <Reveal className="spaces-foot"><Cta href="/services">View all services</Cta></Reveal>
           </div>
-        </section>
-
-        {/* SERVICES */}
-        <section id="services" className="tint-bg" aria-labelledby="services-h">
-          <PinProgress className="svc-pin">
-            <div className="wrap svc-pin-inner">
-              <div className="head">
-                <h2 id="services-h" className="h2">One less thing on your list.</h2>
-                <p className="lede">A regular clean. A thorough reset. A fresh start. Choose the care your space needs.</p>
-              </div>
-              <ul className="svc">
-                {services.map(([tag, title, body], i) => (
-                  <li key={title} style={{ ["--i" as string]: i }}>
-                    <span className="num">{pad(i + 1)}</span>
-                    <span className="eyebrow">{tag}</span>
-                    <h3 className="h3">{title}</h3>
-                    <p className="body">{body}</p>
-                  </li>
-                ))}
-              </ul>
-              <div className="svc-foot"><Cta href="#walkthrough">Request a walkthrough</Cta></div>
-            </div>
-          </PinProgress>
         </section>
 
         {/* STANDARDS */}
@@ -173,19 +141,19 @@ export default function Home() {
           </div>
         </section>
 
-        {/* FINAL INSPECTION */}
-        <section className="section dark" aria-labelledby="insp-h">
-          <div className="wrap">
-            <Head id="insp-h" title="The last look makes the difference." lede="Six details. One room. See what you notice." />
-            <Reveal><Inspection /></Reveal>
-          </div>
-        </section>
-
         {/* SELF-ASSESSMENT (lead capture) */}
         <section id="assessment" className="section tint" aria-labelledby="asmt-h">
           <div className="wrap">
             <Head id="asmt-h" title="Is your current cleaning company actually doing a good job?" lede="Eight honest questions about the service you have today. Your score, and where it falls short." />
             <Reveal className="asmt-wrap" delay={100}><Assessment /></Reveal>
+          </div>
+        </section>
+
+        {/* FINAL INSPECTION */}
+        <section className="section dark" aria-labelledby="insp-h">
+          <div className="wrap">
+            <Head id="insp-h" title="The last look makes the difference." lede="Six details. One room. See what you notice." />
+            <Reveal><Inspection /></Reveal>
           </div>
         </section>
 

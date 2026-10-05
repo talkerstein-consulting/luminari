@@ -6,8 +6,9 @@ import { TcgBadge } from "./tcg-badge";
 export function SiteFooter({ base = "" }: { base?: string }) {
   const cols = [
     { title: "Services", links: [
-      ["Janitorial services", "#services"], ["Office cleaning", "#services"], ["School cleaning", "#services"],
-      ["Restaurant cleaning", "#services"], ["Residential contracts", "#services"], ["Short-term rental cleaning", "#services"], ["Deep cleaning", "#services"],
+      ["All services", "/services"], ["Janitorial services", "/services#janitorial"], ["Office cleaning", "/services#office"],
+      ["Restaurant cleaning", "/services#restaurant"], ["Residential contracts", "/services#residential"], ["Deep cleaning", "/services#deep"],
+      ["Post-construction", "/services#post-construction"], ["Move-in & move-out", "/services#move"],
     ] },
     { title: "Company", links: [["Areas of specialty", "#spaces"], ["Our standards", "#standards"], ["Service areas", "#contact"], ["FAQs", "#faq-h"]] },
     { title: "Start", links: [["Request an assessment", "#walkthrough"], ["Read the report", "/report"], ["Take the self-assessment", "#assessment"]] },

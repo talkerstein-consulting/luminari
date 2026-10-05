@@ -82,7 +82,7 @@ export function Nav({ base = "" }: { base?: string }) {
             <span aria-hidden="true" /><span aria-hidden="true" /><span aria-hidden="true" />
           </button>
           <ul className="nav-links">
-            {links.map((l) => <li key={l.href}><a className="u" href={base + l.href}>{l.label}</a></li>)}
+            {links.map((l) => <li key={l.href}><a className="u" href={l.href.startsWith("/") ? l.href : base + l.href}>{l.label}</a></li>)}
           </ul>
         </div>
 
@@ -106,7 +106,7 @@ export function Nav({ base = "" }: { base?: string }) {
               {links.map((l, i) => (
                 <li key={l.href} style={rise(i)}>
                   <span className="sheet-num" aria-hidden="true">{NUMERALS[i]}</span>
-                  <a className="menu-link" href={base + l.href} onClick={close} aria-label={l.label}><Tumble>{l.label}</Tumble></a>
+                  <a className="menu-link" href={l.href.startsWith("/") ? l.href : base + l.href} onClick={close} aria-label={l.label}><Tumble>{l.label}</Tumble></a>
                 </li>
               ))}
             </ul>
