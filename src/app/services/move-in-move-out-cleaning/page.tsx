@@ -123,7 +123,12 @@ const copy: ServiceCopy = {
   ],
   "cta": {
     "h": "Make the Next Move a Cleaner One.",
-    "p": "Tell us about the property and when you need it ready."
+    "p": "Tell us about the property and when you need it ready.",
+    "scene": {
+      "before": "/images/move-dirty.jpg",
+      "after": "/images/move-clean.jpg",
+      "alt": "Empty condo living room and kitchen, cleaned and ready for move-in"
+    }
   }
 };
 

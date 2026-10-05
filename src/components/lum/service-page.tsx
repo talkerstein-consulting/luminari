@@ -1,9 +1,10 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { Nav } from "./nav";
 import { SiteFooter } from "./footer";
 import { Cta } from "./cta";
-import { Faq, Reveal } from "./interactive";
+import { Faq, PinProgress, Reveal } from "./interactive";
 import { services } from "./services";
 
 /* One service page. Each route under /services passes its own approved copy;
@@ -31,7 +32,8 @@ export type ServiceCopy = {
   third: Block;
   serve: string[];
   faqs: { q: string; a: string }[];
-  cta: { h: string; p: string };
+  /* scene: optional before/after photos; the CTA then pins and cleans up as you scroll */
+  cta: { h: string; p: string; scene?: { before: string; after: string; alt: string } };
 };
 
 export function serviceMetadata(c: ServiceCopy): Metadata {
@@ -45,7 +47,39 @@ export function serviceMetadata(c: ServiceCopy): Metadata {
   };
 }
 
+/* Pinned CTA: the "before" photo fills the stage, the heading arrives a word at a time,
+   and the "after" photo wipes in over it as the reader scrolls. CSS maps --p to each beat. */
+function CleanupCta({ cta, scene }: { cta: ServiceCopy["cta"]; scene: NonNullable<ServiceCopy["cta"]["scene"]> }) {
+  const words = cta.h.split(" ");
+  return (
+    <section className="dark" aria-labelledby="cta-h">
+      <PinProgress className="ct">
+        <div className="ct-pin">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="ct-img" src={scene.before} alt="" aria-hidden="true" loading="lazy" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="ct-img ct-after" src={scene.after} alt={scene.alt} loading="lazy" />
+          <div className="ct-veil" aria-hidden="true" />
+          <div className="wrap head ct-copy">
+            <h2 id="cta-h" className="h2 ct-h" style={{ "--n": words.length } as CSSProperties}>
+              {words.map((w, i) => (
+                <span key={i} className="ct-word" style={{ "--i": i } as CSSProperties}>{w}{i < words.length - 1 ? " " : ""}</span>
+              ))}
+            </h2>
+            <div className="ct-tail">
+              <p className="lede">{cta.p}</p>
+              <Cta href="/#walkthrough">Request a Quote</Cta>
+            </div>
+          </div>
+        </div>
+      </PinProgress>
+    </section>
+  );
+}
+
 const pad = (n: number) => String(n).padStart(2, "0");
+// "Kitchens & Break Rooms" → "kitchens-and-break-rooms" (matches /public/images/clean file names)
+const cardSlug = (h: string) => h.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 function Text({ b, id }: { b: Block; id: string }) {
   return (
@@ -134,6 +168,8 @@ export function ServicePage({ c }: { c: ServiceCopy }) {
             <ul className="svc sp-what">
               {c.what.map((x, i) => (
                 <Reveal as="li" key={x.h} delay={(i % 3) * 90}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img className="sp-what-img" src={`/images/clean/${c.slug}-${cardSlug(x.h)}.jpg`} alt="" width={1600} height={1200} loading="lazy" decoding="async" />
                   <span className="num">{pad(i + 1)}</span>
                   <h3 className="h3">{x.h}</h3>
                   <p className="body">{x.p}</p>
@@ -184,15 +220,17 @@ export function ServicePage({ c }: { c: ServiceCopy }) {
         </section>
 
         {/* final CTA */}
-        <section className="section dark" aria-labelledby="cta-h">
-          <div className="wrap">
-            <Reveal className="head">
-              <h2 id="cta-h" className="h2">{c.cta.h}</h2>
-              <p className="lede">{c.cta.p}</p>
-              <Cta href="/#walkthrough">Request a Quote</Cta>
-            </Reveal>
-          </div>
-        </section>
+        {c.cta.scene ? <CleanupCta cta={c.cta} scene={c.cta.scene} /> : (
+          <section className="section dark" aria-labelledby="cta-h">
+            <div className="wrap">
+              <Reveal className="head">
+                <h2 id="cta-h" className="h2">{c.cta.h}</h2>
+                <p className="lede">{c.cta.p}</p>
+                <Cta href="/#walkthrough">Request a Quote</Cta>
+              </Reveal>
+            </div>
+          </section>
+        )}
 
         {/* other services */}
         <section className="section" aria-labelledby="more-h">
