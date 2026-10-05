@@ -129,8 +129,10 @@ export function ServicePage({ c }: { c: ServiceCopy }) {
       <Nav base="/" />
       <main id="main">
         {/* hero */}
-        <header className="report-hero dark svc-hero">
-          <div className="wrap sp-hero-grid">
+        <header className="report-hero dark svc-hero photo-hero">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="photo-hero-bg" src={cover(c.slug)} alt="" width={2400} height={1600} fetchPriority="high" />
+          <div className="wrap">
             <nav aria-label="Breadcrumb" className="crumbs">
               <ol>
                 <li><a className="u" href="/">Home</a></li>
@@ -146,10 +148,6 @@ export function ServicePage({ c }: { c: ServiceCopy }) {
                 <Cta href="/#walkthrough">Request a Quote</Cta>
                 <Cta href="tel:+18482857711" kind="secondary" label="Talk to us: +1 (848) 285-7711">Talk to Us</Cta>
               </div>
-            </Reveal>
-            <Reveal className="sp-cover" delay={150}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={cover(c.slug)} alt={c.alt} width={2400} height={1600} fetchPriority="high" />
             </Reveal>
           </div>
         </header>

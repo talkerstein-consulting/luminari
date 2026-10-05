@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/lum/footer";
 import { Cta } from "@/components/lum/cta";
 import { Reveal } from "@/components/lum/interactive";
 import { ServiceCards } from "@/components/lum/service-cards";
+import { cover } from "@/components/lum/services";
 
 export const metadata: Metadata = {
   title: "Cleaning services | Luminari Cleaning",
@@ -17,7 +18,9 @@ export default function Services() {
       <a className="skip" href="#main">Skip to content</a>
       <Nav base="/" />
       <main id="main">
-        <header className="report-hero dark">
+        <header className="report-hero dark svc-hero photo-hero">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="photo-hero-bg" src={cover("janitorial-services")} alt="" width={2400} height={1600} fetchPriority="high" />
           <div className="wrap">
             <Reveal className="report-hero-in">
               <span className="eyebrow">Luminari cleaning services</span>
