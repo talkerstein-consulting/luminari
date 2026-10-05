@@ -458,10 +458,12 @@ ul, ol { list-style: none; padding: 0; }
 @media (max-width: 640px) {
   /* the room bleeds edge to edge so the hotspots have space; the caption would sit on them */
   .insp-wide { padding-inline: 0; overflow-x: clip; } /* edge hotspot rings must not widen the page */
-  /* the owner stage: shorter run, so there is no long empty stretch of blur */
-  .stage { height: 210vh; }
-  .stage-title { --in: clamp(0, var(--p) / .16, 1); --out: clamp(0, (var(--p) - .26) / .16, 1); }
-  .stage-card { --c: clamp(0, (var(--p) - .3) / .26, 1); }
+  /* the owner stage: the card is taller than a phone screen, so it is not pinned (pinning cropped it) */
+  .stage { height: auto; }
+  .stage-pin { position: relative; top: auto; height: auto; display: grid; gap: 40px; padding: var(--section) var(--gutter); }
+  .stage-pin > * { grid-area: auto; }
+  .stage-title, .stage-card { transform: none; opacity: 1; }
+  .stage-pin > .stage-bg { transform: none; }
 }
 
 /* =====================================================================
@@ -888,3 +890,5 @@ img.avatar { object-fit: cover; object-position: center 20%; background: var(--l
 .scards a:hover .h3 { color: var(--slate); }
 @media (max-width: 1000px) { .scards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .scards li:first-child .scards-img img { aspect-ratio: 3 / 1.4; } }
 @media (max-width: 560px) { .scards { grid-template-columns: minmax(0, 1fr); } .scards li:first-child { grid-column: auto; } .scards li:first-child .scards-img img { aspect-ratio: 3 / 2; } }
+/* service heroes on phones: the quote button and "Talk to Us" stay side by side, left aligned */
+@media (max-width: 480px) { .svc-hero .actions { flex-direction: row; align-items: center; gap: 12px 28px; } }

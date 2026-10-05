@@ -31,7 +31,7 @@ export function SiteFooter({ base = "" }: { base?: string }) {
           ))}
         </nav>
         <div className="footer-legal">
-          <p>Luminari Cleaning © 2026 · Toronto · Vaughan · Greater Toronto Area</p>
+          <p>Luminari Cleaning © 2026</p>
           <ul>
             <li><a className="u" href="/privacy">Privacy</a></li>
             <li><a className="u" href="/terms">Terms</a></li>
