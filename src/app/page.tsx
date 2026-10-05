@@ -4,6 +4,7 @@ import { LogoMarquee, Opening } from "@/components/lum/reveal";
 import { Assessment } from "@/components/lum/assessment";
 import { SiteFooter } from "@/components/lum/footer";
 import { Cta } from "@/components/lum/cta";
+import { ServiceCards } from "@/components/lum/service-cards";
 import { Nav } from "@/components/lum/nav";
 import { Faq, Reveal, StickyStage, WalkthroughForm } from "@/components/lum/interactive";
 
@@ -112,6 +113,14 @@ export default function Home() {
             <Reveal as="ul" className="proofs" aria-label="Credentials">
               {proofs.map(({ icon: Icon, label }) => <li key={label}><Icon {...ic} />{label}</li>)}
             </Reveal>
+          </div>
+        </section>
+
+        {/* SERVICES */}
+        <section id="services" className="section tint" aria-labelledby="services-h">
+          <div className="wrap">
+            <Head id="services-h" title="One less thing on your list." lede="A regular clean. A thorough reset. A fresh start. Choose the care your space needs." />
+            <ServiceCards />
             <Reveal className="spaces-foot"><Cta href="/services">View all services</Cta></Reveal>
           </div>
         </section>

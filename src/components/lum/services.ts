@@ -10,3 +10,6 @@ export const services = [
   { id: "post-construction-cleaning", tag: "Ready for the next step", title: "Post-construction cleaning", body: "Remove the dust, debris and residue left after construction or renovation." },
   { id: "move-in-move-out-cleaning", tag: "A fresh start", title: "Move-in & move-out cleaning", body: "Prepare a home or rental for handover, or start fresh before the boxes come out." },
 ];
+
+/* each service's cover photo: the page hero, and its card on the home page and /services */
+export const cover = (id: string) => `/images/covers/cover-${id}.jpg`;

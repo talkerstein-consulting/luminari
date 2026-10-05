@@ -5,7 +5,7 @@ import { Nav } from "./nav";
 import { SiteFooter } from "./footer";
 import { Cta } from "./cta";
 import { Faq, PinProgress, Reveal } from "./interactive";
-import { services } from "./services";
+import { cover, services } from "./services";
 
 /* One service page. Each route under /services passes its own approved copy;
    this only lays it out on the site system and adds the structured data. */
@@ -38,7 +38,7 @@ export type ServiceCopy = {
 
 export function serviceMetadata(c: ServiceCopy): Metadata {
   const url = `/services/${c.slug}`;
-  const images = [{ url: `/images/spaces/${c.img}.jpg`, alt: c.alt }];
+  const images = [{ url: cover(c.slug), alt: c.alt }];
   return {
     title: c.seoTitle, description: c.metaDescription,
     alternates: { canonical: url },
@@ -102,7 +102,7 @@ export function ServicePage({ c }: { c: ServiceCopy }) {
   const ld = [
     {
       "@context": "https://schema.org", "@type": "Service", name: c.name, serviceType: c.name, url, description: c.metaDescription,
-      image: `${siteUrl}/images/spaces/${c.img}.jpg`,
+      image: `${siteUrl}${cover(c.slug)}`,
       areaServed: [{ "@type": "City", name: "Toronto" }, { "@type": "City", name: "Vaughan" }, { "@type": "AdministrativeArea", name: "Greater Toronto Area" }],
       provider: {
         "@type": "LocalBusiness", name: "Luminari Cleaning", url: siteUrl, telephone: "+1-848-285-7711", email: "Admin@luminaricleaning.com",
@@ -130,7 +130,7 @@ export function ServicePage({ c }: { c: ServiceCopy }) {
       <main id="main">
         {/* hero */}
         <header className="report-hero dark svc-hero">
-          <div className="wrap">
+          <div className="wrap sp-hero-grid">
             <nav aria-label="Breadcrumb" className="crumbs">
               <ol>
                 <li><a className="u" href="/">Home</a></li>
@@ -146,6 +146,10 @@ export function ServicePage({ c }: { c: ServiceCopy }) {
                 <Cta href="/#walkthrough">Request a Quote</Cta>
                 <Cta href="tel:+18482857711" kind="secondary" label="Talk to us: +1 (848) 285-7711">Talk to Us</Cta>
               </div>
+            </Reveal>
+            <Reveal className="sp-cover" delay={150}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={cover(c.slug)} alt={c.alt} width={2400} height={1600} fetchPriority="high" />
             </Reveal>
           </div>
         </header>
