@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Check } from "lucide-react";
 import { Nav } from "./nav";
 import { SiteFooter } from "./footer";
@@ -135,8 +136,8 @@ export function ServicePage({ c }: { c: ServiceCopy }) {
           <div className="wrap">
             <nav aria-label="Breadcrumb" className="crumbs">
               <ol>
-                <li><a className="u" href="/">Home</a></li>
-                <li><a className="u" href="/services">Services</a></li>
+                <li><Link className="u" href="/">Home</Link></li>
+                <li><Link className="u" href="/services">Services</Link></li>
                 <li aria-current="page">{c.name}</li>
               </ol>
             </nav>
