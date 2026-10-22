@@ -53,7 +53,7 @@ describe("SMTP form delivery", () => {
     const response = await walkthrough(request(lead));
     expect(response.status).toBe(502);
     expect(await response.text()).not.toContain("private");
-    expect(console.error).toHaveBeenCalledWith("Lead email delivery failed");
+    expect(console.error).toHaveBeenCalledWith("Lead email delivery failed", { code: "UNKNOWN", status: undefined });
     expect(close).toHaveBeenCalled();
   });
   it("rejects invalid, cross-origin, and oversized input before SMTP", async () => {
