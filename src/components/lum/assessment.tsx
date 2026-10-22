@@ -34,6 +34,8 @@ export function Assessment() {
   const [name, setName] = useState("");
   const [tried, setTried] = useState(false);
   const [sending, setSending] = useState(false);
+  const [deliveryError, setDeliveryError] = useState(false);
+  const [website, setWebsite] = useState("");
 
   const score = picks.reduce((a, b) => a + b, 0);
   const pct = Math.round((score / (questions.length * 2)) * 100);
@@ -52,12 +54,13 @@ export function Assessment() {
     setTried(true);
     if (!emailOk(email) || sending) return;
     setSending(true);
-    // the lead is sent if the site is configured to; the result is shown either way
-    await fetch("/api/assessment", {
+    setDeliveryError(false);
+    const response = await fetch("/api/assessment", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, name, score: pct, answers: picks }),
+      body: JSON.stringify({ email, name, answers: picks, website }),
     }).catch(() => null);
     setSending(false);
+    if (!response?.ok) { setDeliveryError(true); return; }
     setStage("result");
   };
 
@@ -88,9 +91,10 @@ export function Assessment() {
 
       {stage === "gate" && (
         <form className="asmt-gate" onSubmit={unlock} noValidate>
+          <div hidden aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} /></label></div>
           <LockKeyhole strokeWidth={1.25} aria-hidden="true" />
           <h3>Your score is ready.</h3>
-          <p className="body">Where should we send your results? You’ll see them right away.</p>
+          <p className="body">Enter your email to see your results and let our team follow up.</p>
           <div className="asmt-fields">
             <label className="field"><span>Name <em>(optional)</em></span><input autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} /></label>
             <label className={`field ${tried && !emailOk(email) ? "err" : ""}`}>
@@ -98,11 +102,11 @@ export function Assessment() {
               <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-invalid={(tried && !emailOk(email)) || undefined} required />
             </label>
           </div>
-          <p className="form-msg" role="alert">{tried && !emailOk(email) ? "Enter a complete email address to see your score." : ""}</p>
+          <p className="form-msg" role="alert">{tried && !emailOk(email) ? "Enter a complete email address to see your score." : deliveryError ? "We couldn’t send your details. Please try again." : ""}</p>
           <button type="submit" className={`cta cta-main cta-icon ${sending ? "is-busy" : ""}`} aria-label="Show my results" disabled={sending}>
             <Tumble>Show my results</Tumble><ArrowRight strokeWidth={1.5} aria-hidden="true" />
           </button>
-          <p className="asmt-fine">One email with your results, and a single follow-up. No newsletters.</p>
+          <p className="asmt-fine">Your results appear here. Our team may follow up about your cleaning needs. No newsletters.</p>
         </form>
       )}
 

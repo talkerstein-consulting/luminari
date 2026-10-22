@@ -51,7 +51,7 @@ export function Faq({ items }: { items: { q: string; a: string }[] }) {
   );
 }
 
-/* ---------- Walkthrough form: opens a ready-to-send email ---------- */
+/* ---------- Walkthrough form: server-side SMTP delivery ---------- */
 const services = [
   "Recurring janitorial", "Office cleaning", "Restaurant cleaning", "Residential contracts",
   "Deep cleaning", "Post-construction cleaning", "Move-in & move-out cleaning", "School cleaning",
@@ -59,35 +59,35 @@ const services = [
 const emailOk = (v: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
 export function WalkthroughForm() {
-  const [f, setF] = useState({ name: "", email: "", company: "", service: "" });
+  const [f, setF] = useState({ name: "", email: "", company: "", service: "", website: "" });
   const [tried, setTried] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const [deliveryError, setDeliveryError] = useState(false);
   const blur = (k: string) => () => setTouched((t) => ({ ...t, [k]: true }));
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setF({ ...f, [k]: e.target.value });
   const bad = { name: !f.name.trim(), email: !emailOk(f.email), service: !f.service };
   const valid = !bad.name && !bad.email && !bad.service;
 
-  // Send through the site first; if that isn't configured or fails, open a ready-made email.
+  // Only acknowledge delivery once SMTP accepts the message.
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTried(true);
     if (!valid || sending) return;
     setSending(true);
+    setDeliveryError(false);
     const r = await fetch("/api/walkthrough", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(f) }).catch(() => null);
     setSending(false);
     if (r?.ok) { setDone(true); return; }
-    const body = encodeURIComponent(`Name: ${f.name}\nCompany: ${f.company || "-"}\nService: ${f.service}\nEmail: ${f.email}`);
-    window.location.href = `mailto:Admin@luminaricleaning.com?subject=${encodeURIComponent("Walkthrough request")}&body=${body}`;
-    setDone(true);
+    setDeliveryError(true);
   };
 
   if (done) {
     return (
       <p className="form-done" role="status">
         <Check strokeWidth={1.5} aria-hidden="true" />
-        Your email app should open with the request ready. Nothing is sent until you press send.
+        Your request has been sent. Our team will be in touch to arrange your assessment.
       </p>
     );
   }
@@ -95,6 +95,7 @@ export function WalkthroughForm() {
   const err = (k: keyof typeof bad) => (tried || touched[k]) && bad[k];
   return (
     <form id="walkthrough" className="form" onSubmit={submit} noValidate>
+      <div hidden aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" value={f.website} onChange={set("website")} /></label></div>
       <label className={`field ${err("name") ? "err" : ""}`}>
         <span>Your name</span>
         <input autoComplete="name" value={f.name} onChange={set("name")} onBlur={blur("name")} aria-invalid={err("name") || undefined} required />
@@ -115,7 +116,7 @@ export function WalkthroughForm() {
       </div>
       <div className="form-foot">
         <button type="submit" className={`cta cta-main ${sending ? "is-busy" : ""}`} aria-label="Request an assessment" aria-busy={sending || undefined} disabled={sending}><Tumble>Request an assessment</Tumble></button>
-        <p className="form-msg" role="alert">{tried && !valid ? "Add your name, a complete work email and a service to continue." : ""}</p>
+        <p className="form-msg" role="alert">{tried && !valid ? "Add your name, a complete work email and a service to continue." : deliveryError ? "We couldn’t send your request. Please try again or contact us directly below." : ""}</p>
       </div>
     </form>
   );
