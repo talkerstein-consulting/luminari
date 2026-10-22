@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, Check, LockKeyhole, RotateCcw } from "lucide-react";
 import { Tumble } from "./cta";
+import { getRecaptchaToken } from "@/lib/recaptcha-client";
+import { RecaptchaNotice } from "./recaptcha-notice";
 
 /* "Is your current cleaning company actually doing a good job?"
    Eight questions, one at a time. The score is ready at the end, but it is shown
@@ -55,9 +57,11 @@ export function Assessment() {
     if (!emailOk(email) || sending) return;
     setSending(true);
     setDeliveryError(false);
+    const recaptchaToken = await getRecaptchaToken("assessment").catch(() => null);
+    if (!recaptchaToken) { setSending(false); setDeliveryError(true); return; }
     const response = await fetch("/api/assessment", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, name, answers: picks, website }),
+      body: JSON.stringify({ email, name, answers: picks, website, recaptchaToken }),
     }).catch(() => null);
     setSending(false);
     if (!response?.ok) { setDeliveryError(true); return; }
@@ -102,11 +106,12 @@ export function Assessment() {
               <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-invalid={(tried && !emailOk(email)) || undefined} required />
             </label>
           </div>
-          <p className="form-msg" role="alert">{tried && !emailOk(email) ? "Enter a complete email address to see your score." : deliveryError ? "We couldn’t send your details. Please try again." : ""}</p>
+          <p className="form-msg" role="alert">{tried && !emailOk(email) ? "Enter a complete email address to see your score." : deliveryError ? "We couldn’t verify or send your details. Please retry with any script blocker disabled." : ""}</p>
           <button type="submit" className={`cta cta-main cta-icon ${sending ? "is-busy" : ""}`} aria-label="Show my results" disabled={sending}>
             <Tumble>Show my results</Tumble><ArrowRight strokeWidth={1.5} aria-hidden="true" />
           </button>
           <p className="asmt-fine">Your results appear here. Our team may follow up about your cleaning needs. No newsletters.</p>
+          <RecaptchaNotice />
         </form>
       )}
 

@@ -1,3 +1,4 @@
+import { verifyRecaptcha } from "@/lib/recaptcha";
 import { cleanField, deliverLead, readLead, validEmail } from "@/lib/lead-email";
 
 export const runtime = "nodejs";
@@ -14,6 +15,8 @@ export async function POST(req: Request) {
   }
   const answers = f.answers as number[];
   const score = Math.round(answers.reduce((sum, answer) => sum + answer, 0) / 16 * 100);
+  const blocked = await verifyRecaptcha(f.recaptchaToken, "assessment");
+  if (blocked) return blocked;
   return deliverLead(`New website lead: self-assessment ${score}/100`,
     `A new self-assessment lead from luminaricleaning.ca\n\nName: ${name || "-"}\nEmail: ${email}\nScore: ${score}/100\nAnswers (2 always, 1 sometimes, 0 rarely): ${answers.join(", ")}\n\nReply to this email to contact the visitor.`, email);
 }
