@@ -1,26 +1,19 @@
-// Self-assessment leads. Sends the lead (and its score) through Resend when RESEND_API_KEY
-// is set; otherwise answers 501 — the visitor still sees their result either way.
+import { cleanField, deliverLead, readLead, validEmail } from "@/lib/lead-email";
+
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 export async function POST(req: Request) {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) return Response.json({ ok: false, reason: "not-configured" }, { status: 501 });
-
-  const f = await req.json().catch(() => null);
-  const clean = (v: unknown) => String(v ?? "").trim().slice(0, 200);
-  const email = clean(f?.email), name = clean(f?.name);
-  const score = Math.max(0, Math.min(100, Number(f?.score) || 0));
-  const answers = Array.isArray(f?.answers) ? f.answers.slice(0, 8).map((n: unknown) => Number(n) || 0) : [];
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return Response.json({ ok: false }, { status: 400 });
-
-  const r = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: process.env.WALKTHROUGH_FROM ?? "Luminari <onboarding@resend.dev>",
-      to: process.env.WALKTHROUGH_TO ?? "Admin@luminaricleaning.com",
-      reply_to: email,
-      subject: `Self-assessment: ${score}/100`,
-      text: `Name: ${name || "-"}\nEmail: ${email}\nScore: ${score}/100\nAnswers (2 always, 1 sometimes, 0 rarely): ${answers.join(", ")}`,
-    }),
-  }).catch(() => null);
-  return Response.json({ ok: Boolean(r?.ok) }, { status: r?.ok ? 200 : 502 });
+  const f = await readLead(req);
+  if (!f) return Response.json({ ok: false }, { status: 400 });
+  if (f.website) return Response.json({ ok: true });
+  const email = cleanField(f.email), name = cleanField(f.name);
+  if (!validEmail(email) || !Array.isArray(f.answers) || f.answers.length !== 8 ||
+      !f.answers.every((n: unknown) => typeof n === "number" && [0, 1, 2].includes(n))) {
+    return Response.json({ ok: false }, { status: 400 });
+  }
+  const answers = f.answers as number[];
+  const score = Math.round(answers.reduce((sum, answer) => sum + answer, 0) / 16 * 100);
+  return deliverLead(`New website lead: self-assessment ${score}/100`,
+    `A new self-assessment lead from luminaricleaning.ca\n\nName: ${name || "-"}\nEmail: ${email}\nScore: ${score}/100\nAnswers (2 always, 1 sometimes, 0 rarely): ${answers.join(", ")}\n\nReply to this email to contact the visitor.`, email);
 }
