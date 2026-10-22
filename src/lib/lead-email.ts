@@ -60,10 +60,17 @@ export async function deliverLead(subject: string, text: string, replyTo: string
       return Response.json({ ok: false, reason: "not-configured" }, { status: 503 });
     }
     // Never log credentials, SMTP responses or lead details.
-    const failure = error as { code?: unknown; responseCode?: unknown };
+    const failure = error as { code?: unknown; responseCode?: unknown; response?: unknown };
     const code = typeof failure.code === "string" && /^[A-Z_]+$/.test(failure.code) ? failure.code : "UNKNOWN";
     const status = typeof failure.responseCode === "number" ? failure.responseCode : undefined;
-    console.error("Lead email delivery failed", { code, status });
+    const response = typeof failure.response === "string" ? failure.response : "";
+    const reason = /security defaults/i.test(response) ? "SECURITY_DEFAULTS"
+      : /SmtpClientAuthentication.*disabled/i.test(response) ? "SMTP_AUTH_DISABLED"
+      : /basic authentication.*disabled/i.test(response) ? "BASIC_AUTH_DISABLED"
+      : /multi.factor|MFA|app.password/i.test(response) ? "MFA_REQUIRED"
+      : /credentials.*incorrect|invalid.*credentials/i.test(response) ? "INVALID_CREDENTIALS"
+      : /federat|STS/i.test(response) ? "FEDERATION_FAILURE" : "UNSPECIFIED";
+    console.error("Lead email delivery failed", { code, status, reason });
     return Response.json({ ok: false, reason: "delivery-failed" }, { status: 502 });
   }
 }
