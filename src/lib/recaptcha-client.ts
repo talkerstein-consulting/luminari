@@ -33,6 +33,9 @@ export async function getRecaptchaToken(action: "walkthrough" | "assessment"): P
   // Tokens are short-lived and single-use: obtain a fresh one for every submit/retry.
   return new Promise<string>((resolve, reject) => {
     const timeout = window.setTimeout(() => reject(new Error("Verification timed out")), 12_000);
-    recaptcha.execute(key, { action }).then(resolve, reject).finally(() => window.clearTimeout(timeout));
+    Promise.resolve(recaptcha.execute(key, { action })).then(
+      (token) => { window.clearTimeout(timeout); resolve(token); },
+      (error) => { window.clearTimeout(timeout); reject(error); },
+    );
   });
 }
