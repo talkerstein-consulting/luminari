@@ -21,3 +21,7 @@ Never commit the password. Add it directly to Vercel production environment sett
 Run `npm test` and `npm run build`. After adding credentials, submit a clearly labeled test lead through the live form and confirm its arrival in the mailbox. Test both forms. Until credentials are present, valid submissions return 503 and the form displays a retry message; it does not claim delivery or open an email app.
 
 The self-assessment displays its results after the owner notification is accepted. It does not automatically email results to the visitor. Both forms include a honeypot and reject cross-origin and oversized JSON requests; these checks are not a substitute for a distributed anti-abuse service if traffic requires one.
+
+## reCAPTCHA v3
+
+Production also requires `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` (public) and `RECAPTCHA_SECRET_KEY` (Secret). Register `luminaricleaning.ca` in the Google reCAPTCHA v3 console. The server accepts only the apex and www hostnames, the correct form action, scores of at least 0.5, and tokens no older than two minutes. Verification errors block SMTP; no bypass is deployed. A new token is obtained on each submission and retry. Google privacy and terms notices appear beside each form.

@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { Tumble } from "./cta";
+import { getRecaptchaToken } from "@/lib/recaptcha-client";
+import { RecaptchaNotice } from "./recaptcha-notice";
 
 /* ---------- Reveal: rises into place once, the first time it enters view ---------- */
 export function Reveal({ as: Tag = "div", className = "", delay = 0, children, ...rest }: {
@@ -77,7 +79,9 @@ export function WalkthroughForm() {
     if (!valid || sending) return;
     setSending(true);
     setDeliveryError(false);
-    const r = await fetch("/api/walkthrough", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(f) }).catch(() => null);
+    const recaptchaToken = await getRecaptchaToken("walkthrough").catch(() => null);
+    if (!recaptchaToken) { setSending(false); setDeliveryError(true); return; }
+    const r = await fetch("/api/walkthrough", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...f, recaptchaToken }) }).catch(() => null);
     setSending(false);
     if (r?.ok) { setDone(true); return; }
     setDeliveryError(true);
@@ -116,8 +120,9 @@ export function WalkthroughForm() {
       </div>
       <div className="form-foot">
         <button type="submit" className={`cta cta-main ${sending ? "is-busy" : ""}`} aria-label="Request an assessment" aria-busy={sending || undefined} disabled={sending}><Tumble>Request an assessment</Tumble></button>
-        <p className="form-msg" role="alert">{tried && !valid ? "Add your name, a complete work email and a service to continue." : deliveryError ? "We couldn’t send your request. Please try again or contact us directly below." : ""}</p>
+        <p className="form-msg" role="alert">{tried && !valid ? "Add your name, a complete work email and a service to continue." : deliveryError ? "We couldn’t verify or send your request. Please retry with any script blocker disabled, or contact us directly below." : ""}</p>
       </div>
+      <RecaptchaNotice />
     </form>
   );
 }

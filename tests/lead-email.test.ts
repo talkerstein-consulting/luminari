@@ -1,8 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import nodemailer from "nodemailer";
+import { verifyRecaptcha } from "../src/lib/recaptcha";
 import { POST as walkthrough } from "../src/app/api/walkthrough/route";
 import { POST as assessment } from "../src/app/api/assessment/route";
 
+vi.mock("../src/lib/recaptcha", () => ({ verifyRecaptcha: vi.fn(async () => null) }));
 vi.mock("nodemailer", () => ({ default: { createTransport: vi.fn() } }));
 const sendMail = vi.fn();
 const close = vi.fn();
@@ -18,6 +20,7 @@ beforeEach(() => {
   vi.stubEnv("SMTP_PORT", "587");
   vi.stubEnv("LEADS_TO", "bzrihen@luminaricleaning.ca");
   vi.mocked(nodemailer.createTransport).mockReturnValue({ sendMail, close } as unknown as ReturnType<typeof nodemailer.createTransport>);
+  vi.mocked(verifyRecaptcha).mockResolvedValue(null);
   sendMail.mockResolvedValue({ accepted: ["bzrihen@luminaricleaning.ca"], rejected: [] });
   vi.spyOn(console, "error").mockImplementation(() => {});
 });
@@ -60,6 +63,11 @@ describe("SMTP form delivery", () => {
     expect((await walkthrough(request({ ...lead, email: "invalid" }))).status).toBe(400);
     expect((await walkthrough(request(lead, "https://other.example"))).status).toBe(400);
     expect((await walkthrough(request({ ...lead, extra: "x".repeat(9000) }))).status).toBe(400);
+    expect(sendMail).not.toHaveBeenCalled();
+  });
+  it("blocks SMTP when reCAPTCHA verification fails", async () => {
+    vi.mocked(verifyRecaptcha).mockResolvedValueOnce(Response.json({ ok: false }, { status: 403 }));
+    expect((await walkthrough(request(lead))).status).toBe(403);
     expect(sendMail).not.toHaveBeenCalled();
   });
   it("silently discards honeypot submissions", async () => {
