@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { services } from "@/components/lum/services";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://luminaricleaning.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://luminaricleaning.ca";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
