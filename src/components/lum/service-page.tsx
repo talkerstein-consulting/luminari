@@ -106,7 +106,7 @@ export function ServicePage({ c }: { c: ServiceCopy }) {
       image: `${siteUrl}${cover(c.slug)}`,
       areaServed: [{ "@type": "City", name: "Toronto" }, { "@type": "City", name: "Vaughan" }, { "@type": "AdministrativeArea", name: "Greater Toronto Area" }],
       provider: {
-        "@type": "LocalBusiness", name: "Luminari Cleaning", url: siteUrl, telephone: "+1-848-285-7711", email: "Admin@luminaricleaning.com",
+        "@type": "LocalBusiness", name: "Luminari Cleaning", url: siteUrl, telephone: "+1-848-285-7711", email: "bzrihen@luminaricleaning.ca",
         address: { "@type": "PostalAddress", streetAddress: "4100 Chesswood Drive, Unit 200", addressLocality: "Toronto", addressRegion: "ON", addressCountry: "CA" },
       },
     },

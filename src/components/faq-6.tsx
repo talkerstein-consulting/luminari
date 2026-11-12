@@ -14,7 +14,7 @@ const faqs = [
 
 const channels = [
   { icon: Phone, label: "+1 (848) 285-7711", detail: "Call the office", href: "tel:+18482857711" },
-  { icon: Mail, label: "Admin@luminaricleaning.com", detail: "Write to us any time", href: "mailto:Admin@luminaricleaning.com" },
+  { icon: Mail, label: "bzrihen@luminaricleaning.ca", detail: "Write to us any time", href: "mailto:bzrihen@luminaricleaning.ca" },
 ];
 
 const ic = { className: "lucide shrink-0", strokeWidth: 1.75, "aria-hidden": true } as const;

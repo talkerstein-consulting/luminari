@@ -113,7 +113,7 @@ export function Nav({ base = "" }: { base?: string }) {
           </nav>
           <div className="sheet-foot" style={rise(links.length)}>
             <span className="eyebrow">Get in touch</span>
-            <a className="u" href="mailto:Admin@luminaricleaning.com">Admin@luminaricleaning.com</a>
+            <a className="u" href="mailto:bzrihen@luminaricleaning.ca">bzrihen@luminaricleaning.ca</a>
             <Cta href={base + "#walkthrough"} onClick={close}>Get started</Cta>
           </div>
         </div>

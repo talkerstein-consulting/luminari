@@ -206,7 +206,7 @@ export default function Home() {
               <p className="lede">The practical details facility and office managers ask before booking a walkthrough, answered by our team.</p>
               <ul className="channels">
                 <li><a href="tel:+18482857711"><Phone {...ic} /><span><b>+1 (848) 285-7711</b>Call the office</span></a></li>
-                <li><a href="mailto:Admin@luminaricleaning.com"><Mail {...ic} /><span><b>Admin@luminaricleaning.com</b>Write to us any time</span></a></li>
+                <li><a href="mailto:bzrihen@luminaricleaning.ca"><Mail {...ic} /><span><b>bzrihen@luminaricleaning.ca</b>Write to us any time</span></a></li>
               </ul>
               <Cta href="#walkthrough" kind="secondary">Ask us directly</Cta>
             </Reveal>
@@ -223,7 +223,7 @@ export default function Home() {
               <span className="eyebrow">Or reach us directly</span>
               <p>
                 <a className="u" href="tel:+18482857711">+1 (848) 285-7711</a>
-                <a className="u" href="mailto:Admin@luminaricleaning.com">Admin@luminaricleaning.com</a>
+                <a className="u" href="mailto:bzrihen@luminaricleaning.ca">bzrihen@luminaricleaning.ca</a>
               </p>
             </div>
           </div>

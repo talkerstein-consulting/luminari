@@ -265,7 +265,7 @@ export function WalkthroughForm() {
     setState("loading");
     const body = encodeURIComponent(`Name: ${f.name}\nCompany: ${f.company || "-"}\nService: ${f.service}\nEmail: ${f.email}`);
     setTimeout(() => {
-      window.location.href = `mailto:Admin@luminaricleaning.com?subject=${encodeURIComponent("Walkthrough request")}&body=${body}`;
+      window.location.href = `mailto:bzrihen@luminaricleaning.ca?subject=${encodeURIComponent("Walkthrough request")}&body=${body}`;
       setState("done");
     }, 500);
   };

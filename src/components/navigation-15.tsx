@@ -179,7 +179,7 @@ export default function Navigation15() {
               </motion.ul>
               <div className="mt-auto grid gap-[var(--s-2)] pt-[var(--s-5)]">
                 <span className="eyebrow">Get in touch</span>
-                <a className="textlink justify-self-start" href="mailto:Admin@luminaricleaning.com">Admin@luminaricleaning.com</a>
+                <a className="textlink justify-self-start" href="mailto:bzrihen@luminaricleaning.ca">bzrihen@luminaricleaning.ca</a>
                 <div className="cta-group" onClick={() => setOpen(false)}>
                   <Button href="#walkthrough">Let’s talk</Button>
                 </div>

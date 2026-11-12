@@ -58,7 +58,7 @@ export default function Footer8() {
             <address className="contact">
               <span className="inline-flex min-h-[44px] items-center gap-[var(--s-1)]"><MapPin {...ic} />4100 Chesswood Drive, Unit 200</span>
               <a href="tel:+18482857711"><Phone {...ic} />+1 (848) 285-7711</a>
-              <a href="mailto:Admin@luminaricleaning.com"><Mail {...ic} />Admin@luminaricleaning.com</a>
+              <a href="mailto:bzrihen@luminaricleaning.ca"><Mail {...ic} />bzrihen@luminaricleaning.ca</a>
             </address>
           </motion.div>
 

@@ -20,7 +20,7 @@ export function SiteFooter({ base = "" }: { base?: string }) {
         <address className="footer-contact">
           <span>4100 Chesswood Drive, Unit 200</span>
           <a className="u" href="tel:+18482857711">+1 (848) 285-7711</a>
-          <a className="u" href="mailto:Admin@luminaricleaning.com">Admin@luminaricleaning.com</a>
+          <a className="u" href="mailto:bzrihen@luminaricleaning.ca">bzrihen@luminaricleaning.ca</a>
         </address>
         <nav className="footer-cols" aria-label="Footer">
           {cols.map((c) => (

@@ -26,7 +26,7 @@ export default function Cta10() {
             <div className="contact">
               <span className="eyebrow">Or reach us directly</span>
               <a className="focus-visible:outline-[var(--cream)]" href="tel:+18482857711"><Phone {...ic} />+1 (848) 285-7711</a>
-              <a className="focus-visible:outline-[var(--cream)] [overflow-wrap:anywhere]" href="mailto:Admin@luminaricleaning.com"><Mail {...ic} />Admin@luminaricleaning.com</a>
+              <a className="focus-visible:outline-[var(--cream)] [overflow-wrap:anywhere]" href="mailto:bzrihen@luminaricleaning.ca"><Mail {...ic} />bzrihen@luminaricleaning.ca</a>
             </div>
           </div>
 
