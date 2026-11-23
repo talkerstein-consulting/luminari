@@ -11,7 +11,7 @@ import { cover, services } from "./services";
 /* One service page. Each route under /services passes its own approved copy;
    this only lays it out on the site system and adds the structured data. */
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://luminaricleaning.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://luminaricleaning.ca";
 const AREA = "Serving Toronto, Vaughan and the Greater Toronto Area.";
 
 type Block = { h: string; p: string[]; pairs?: { h: string; p: string }[] };

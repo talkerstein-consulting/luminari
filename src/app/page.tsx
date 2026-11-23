@@ -57,6 +57,19 @@ const faqs = [
 const pad = (n: number) => String(n).padStart(2, "0");
 const ic = { strokeWidth: 1.25, "aria-hidden": true } as const;
 
+// Homepage structured data. Same business details as the provider block on the service pages.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://luminaricleaning.ca";
+const homeLd = [
+  {
+    "@context": "https://schema.org", "@type": "LocalBusiness", "@id": `${siteUrl}/#business`,
+    name: "Luminari Cleaning", url: siteUrl, telephone: "+1-848-285-7711", email: "bzrihen@luminaricleaning.ca",
+    description: "Recurring commercial janitorial in Toronto and Vaughan. A familiar team, clear communication, and a workplace ready for your day.",
+    address: { "@type": "PostalAddress", streetAddress: "4100 Chesswood Drive, Unit 200", addressLocality: "Toronto", addressRegion: "ON", addressCountry: "CA" },
+    areaServed: [{ "@type": "City", name: "Toronto" }, { "@type": "City", name: "Vaughan" }, { "@type": "AdministrativeArea", name: "Greater Toronto Area" }],
+  },
+  { "@context": "https://schema.org", "@type": "WebSite", "@id": `${siteUrl}/#website`, name: "Luminari Cleaning", url: siteUrl, publisher: { "@id": `${siteUrl}/#business` } },
+];
+
 function Head({ id, title, lede, children }: { id: string; title: string; lede?: string; children?: React.ReactNode }) {
   return (
     <Reveal className="head">
@@ -70,6 +83,7 @@ function Head({ id, title, lede, children }: { id: string; title: string; lede?:
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeLd).replace(/</g, "\\u003c") }} />
       <a className="skip" href="#main">Skip to content</a>
 
       {/* the original site's scroll opening sits above the header */}
